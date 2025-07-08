@@ -1,20 +1,62 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../Context/Auth/AuthContext';
+import Loading from '../Components/Common/Loading';
 
 const Login = () => {
+  const { signInWithGoogle, signInByEmailAndPassword } =
+    useContext(AuthContext);
+
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  // login with email password
+  const handleSignInWithEmailAndPassword = async (e) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setLoading(true);
+
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    try {
+      await signInByEmailAndPassword(email, password);
+    } catch (error) {
+      console.log(error.message);
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // social login
+  const handleSignInWithGoogle = async () => {
+    setErrorMessage('');
+    try {
+      await signInWithGoogle();
+    } catch (error) {
+      console.log(error);
+      setErrorMessage(error.message);
+    }
+  };
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
       <h1 className="text-2xl font-bold text-center">Login</h1>
-      <form noValidate="" action="" className="space-y-6">
+      <form
+        onSubmit={handleSignInWithEmailAndPassword}
+        noValidate=""
+        action=""
+        className="space-y-6"
+      >
         {/* Email */}
         <div className="space-y-1 text-sm">
           <label htmlFor="email" className="block dark:text-gray-600">
             Email
           </label>
           <input
-            type="text"
+            type="email"
             name="email"
-            id="email"
             placeholder="Enter Your Email"
             className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
           />
@@ -28,7 +70,6 @@ const Login = () => {
           <input
             type="password"
             name="password"
-            id="password"
             placeholder="Enter Your Password"
             className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
           />
@@ -38,8 +79,9 @@ const Login = () => {
             </a>
           </div>
         </div>
+        {errorMessage && <p className="text-red-400">{errorMessage}</p>}
         <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">
-          Sign in
+          {loading ? <Loading /> : 'Login'}
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">
@@ -50,7 +92,11 @@ const Login = () => {
         <div className="flex-1 h-px sm:w-16 dark:bg-gray-300"></div>
       </div>
       <div className="flex justify-center space-x-4">
-        <button aria-label="Log in with Google" className="p-3 rounded-sm">
+        <button
+          onClick={handleSignInWithGoogle}
+          aria-label="Log in with Google"
+          className="p-3 rounded-sm"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 32 32"
@@ -79,9 +125,9 @@ const Login = () => {
         </button>
       </div>
       <p className="text-xs text-center sm:px-6 dark:text-gray-600">
-        Don't have an account? 
+        Don't have an account?
         <Link to="/sign-up" className="underline dark:text-gray-800">
-           Sign up
+          Sign up
         </Link>
       </p>
     </div>
