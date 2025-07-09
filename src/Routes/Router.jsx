@@ -1,9 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
-import RootLayout from "../Layouts/RootLayout";
-import Home from "../Pages/Home";
-import SignUp from "../Pages/SignUp";
-import Login from "../Pages/Login";
-import Forbidden from "../Pages/Others/Forbidden";
+import { createBrowserRouter } from 'react-router-dom';
+import RootLayout from '../Layouts/RootLayout';
+import Home from '../Pages/Home/Home';
+import SignUp from '../Pages/SignUp/SignUp';
+import Forbidden from '../Pages/Others/Forbidden';
+import DashboardLayout from '../Layouts/DashboardLayout';
+import ManageCategories from '../Pages/Dashboard/Admin/ManageCategories/ManageCategories';
+import Login from '../Pages/Login/Login';
 
 export const router = createBrowserRouter([
   {
@@ -12,20 +14,30 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: <Home />,
       },
       {
         path: 'sign-up',
-        element: <SignUp />
+        element: <SignUp />,
       },
       {
         path: 'login',
-        element: <Login />
+        element: <Login />,
       },
       {
         path: 'forbidden',
-        element: <Forbidden />
-      }
-    ]
-  }
-])
+        element: <Forbidden />,
+      },
+    ],
+  },
+  {
+    path: '/dashboard',
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: 'manage-categories',
+        element: <ManageCategories />,
+      },
+    ],
+  },
+]);

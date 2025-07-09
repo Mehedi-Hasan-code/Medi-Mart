@@ -18,7 +18,7 @@ const ProfileLinks = () => {
         <Link>Profile</Link>
       </li>
       <li>
-        <Link>Settings</Link>
+        <Link to='/dashboard'>Dashboard</Link>
       </li>
       <li>
         <button onClick={handleSignOut}>Logout</button>

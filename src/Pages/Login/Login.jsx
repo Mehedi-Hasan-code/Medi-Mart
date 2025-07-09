@@ -1,131 +1,54 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AuthContext } from '../Context/Auth/AuthContext';
-import { toast } from 'react-toastify';
-import Loading from '../Components/Common/Loading';
-import axios from 'axios';
-import useAxiosSecure from '../hooks/useAxiosSecure';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Context/Auth/AuthContext';
+import Loading from '../../Components/Common/Loading';
 
-const SignUp = () => {
-  const [errorMessage, setErrorMessage] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [profileUrl, setProfileUrl] = useState('');
-
-  const navigate = useNavigate();
-  const { publicApi } = useAxiosSecure();
-
-  const { createUser, updateUser, signInWithGoogle, setUser } =
+const Login = () => {
+  const { signInWithGoogle, signInByEmailAndPassword } =
     useContext(AuthContext);
 
-  // email password sign up
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
-    setIsLoading(true);
+  // login with email password
+  const handleSignInWithEmailAndPassword = async (e) => {
+    e.preventDefault();
     setErrorMessage('');
+    setLoading(true);
 
     const form = e.target;
-    const name = form.name.value;
     const email = form.email.value;
     const password = form.password.value;
-    const role = form.role.value;
-
-    const userInfo = {
-      name,
-      email,
-      role,
-      created_at: new Date().toISOString(),
-    };
 
     try {
-      // create user in firebase
-      const userCredential = await createUser(email, password);
-
-      // update user profile
-      await updateUser(name, profileUrl);
-
-      // set user in context for real time update in ui
-      setUser({
-        ...userCredential.user,
-        displayName: name,
-        photoURL: profileUrl,
-      });
-
-      // upload user to mongodb
-      await publicApi.post('/users', userInfo);
-
-      // success actions
-      navigate('/');
-      toast.success('Registration successful');
+      await signInByEmailAndPassword(email, password);
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        setErrorMessage('This email is already registered.');
-      } else {
-        setErrorMessage(error.message);
-      }
+      console.log(error.message);
+      setErrorMessage(error.message);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  // social signup
-
+  // social login
   const handleSignInWithGoogle = async () => {
     setErrorMessage('');
     try {
-      // sign in with google
-      const userCredential = await signInWithGoogle();
-
-      // get user info
-      const userInfo = {
-        name: userCredential.user.displayName,
-        email: userCredential.user.email,
-        role: 'user',
-        created_at: new Date().toISOString(),
-      };
-
-      // upload to mongodb
-      await publicApi.post('/users', userInfo);
+      await signInWithGoogle();
     } catch (error) {
       console.log(error);
-      setErrorMessage(error.message)
+      setErrorMessage(error.message);
     }
   };
-
-  // upload image to image bb
-  const handleImageUpload = async (e) => {
-    const imageFile = e.target.files[0];
-
-    const formData = new FormData();
-    formData.append('image', imageFile);
-
-    const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
-      import.meta.env.VITE_IMGBB_API_KEY
-    }`;
-
-    const res = await axios.post(imgUploadUrl, formData);
-
-    setProfileUrl(res.data.data.display_url);
-  };
-
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
-      <h1 className="text-2xl font-bold text-center">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* User name */}
-        <div className="space-y-1 text-sm">
-          <label htmlFor="name" className="block dark:text-gray-600">
-            User Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            required
-            placeholder="Enter Your Name"
-            className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
-          />
-        </div>
-
+      <h1 className="text-2xl font-bold text-center">Login</h1>
+      <form
+        onSubmit={handleSignInWithEmailAndPassword}
+        noValidate=""
+        action=""
+        className="space-y-6"
+      >
         {/* Email */}
         <div className="space-y-1 text-sm">
           <label htmlFor="email" className="block dark:text-gray-600">
@@ -134,56 +57,31 @@ const SignUp = () => {
           <input
             type="email"
             name="email"
-            required
             placeholder="Enter Your Email"
             className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
           />
         </div>
+
+        {/* password */}
         <div className="space-y-1 text-sm">
-          {/* Photo upload */}
-          <div className="space-y-1 text-sm">
-            <label htmlFor="photo" className="block dark:text-gray-600">
-              Photo
-            </label>
-            <input
-              type="file"
-              name="photo"
-              required
-              onChange={handleImageUpload}
-              accept="image/*"
-              className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
-            />
-          </div>
-          {/* password */}
           <label htmlFor="password" className="block dark:text-gray-600">
             Password
           </label>
           <input
             type="password"
             name="password"
-            required
-            placeholder="Enter A Password"
+            placeholder="Enter Your Password"
             className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
           />
-        </div>
-        {/* Role select */}
-        <div className="space-y-1 text-sm">
-          <label htmlFor="role" className="block dark:text-gray-600">
-            Role
-          </label>
-          <select
-            name="role"
-            id="role"
-            className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
-          >
-            <option value="">I want to be a</option>
-            <option value="user">User</option>
-            <option value="seller">Seller</option>
-          </select>
+          <div className="flex justify-end text-xs dark:text-gray-600">
+            <a rel="noopener noreferrer" href="#">
+              Forgot Password?
+            </a>
+          </div>
         </div>
         {errorMessage && <p className="text-red-400">{errorMessage}</p>}
         <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">
-          {isLoading ? <Loading /> : 'Sign Up'}
+          {loading ? <Loading /> : 'Login'}
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">
@@ -227,13 +125,13 @@ const SignUp = () => {
         </button>
       </div>
       <p className="text-xs text-center sm:px-6 dark:text-gray-600">
-        Already have an account?
-        <Link to="/login" className="underline dark:text-gray-800">
-          Login
+        Don't have an account?
+        <Link to="/sign-up" className="underline dark:text-gray-800">
+          Sign up
         </Link>
       </p>
     </div>
   );
 };
 
-export default SignUp;
+export default Login;
