@@ -1,11 +1,16 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import Loading from '../../Components/Common/Loading';
+import { getAdditionalUserInfo } from 'firebase/auth';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const { signInWithGoogle, signInByEmailAndPassword } =
     useContext(AuthContext);
+  const navigate = useNavigate();
+  const { publicApi } = useAxiosSecure();
 
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -34,7 +39,25 @@ const Login = () => {
   const handleSignInWithGoogle = async () => {
     setErrorMessage('');
     try {
-      await signInWithGoogle();
+      // sign in with google
+      const userCredential = await signInWithGoogle();
+      const additionalInfo = getAdditionalUserInfo(userCredential);
+      if (additionalInfo?.isNewUser) {
+        // get user info
+        const userInfo = {
+          name: additionalInfo.profile.name,
+          email: additionalInfo.profile.email,
+          role: 'user',
+          photoURL: additionalInfo.profile.picture,
+          created_at: new Date().toISOString(),
+        };
+
+        // upload to mongodb
+        await publicApi.post('/users', userInfo);
+      }
+      // success actions
+      navigate('/');
+      toast.success('Login successful');
     } catch (error) {
       console.log(error);
       setErrorMessage(error.message);

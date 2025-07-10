@@ -5,11 +5,13 @@ import { toast } from 'react-toastify';
 import Loading from '../../Components/Common/Loading';
 import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { getAdditionalUserInfo } from 'firebase/auth';
 
 const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [profileUrl, setProfileUrl] = useState('');
+  const [photoUploading, setPhotoUploading] = useState(false);
 
   const navigate = useNavigate();
   const { publicApi } = useAxiosSecure();
@@ -34,6 +36,7 @@ const SignUp = () => {
       name,
       email,
       role,
+      photoURL: profileUrl,
       created_at: new Date().toISOString(),
     };
 
@@ -75,37 +78,50 @@ const SignUp = () => {
     try {
       // sign in with google
       const userCredential = await signInWithGoogle();
+      const additionalInfo = getAdditionalUserInfo(userCredential);
+      if (additionalInfo?.isNewUser) {
+        // get user info
+        console.log(additionalInfo);
+        const userInfo = {
+          name: additionalInfo.profile.name,
+          email: additionalInfo.profile.email,
+          role: 'user',
+          photoURL: additionalInfo.profile.picture,
+          created_at: new Date().toISOString(),
+        };
 
-      // get user info
-      const userInfo = {
-        name: userCredential.user.displayName,
-        email: userCredential.user.email,
-        role: 'user',
-        created_at: new Date().toISOString(),
-      };
-
-      // upload to mongodb
-      await publicApi.post('/users', userInfo);
+        // upload to mongodb
+        await publicApi.post('/users', userInfo);
+      }
+      // success actions
+      navigate('/');
+      toast.success('Login successful');
     } catch (error) {
       console.log(error);
-      setErrorMessage(error.message)
+      setErrorMessage(error.message);
     }
   };
 
   // upload image to image bb
   const handleImageUpload = async (e) => {
-    const imageFile = e.target.files[0];
+    try {
+      setPhotoUploading(true);
+      const imageFile = e.target.files[0];
+      const formData = new FormData();
+      formData.append('image', imageFile);
+      const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
+        import.meta.env.VITE_IMGBB_API_KEY
+      }`;
 
-    const formData = new FormData();
-    formData.append('image', imageFile);
+      const res = await axios.post(imgUploadUrl, formData);
 
-    const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
-      import.meta.env.VITE_IMGBB_API_KEY
-    }`;
-
-    const res = await axios.post(imgUploadUrl, formData);
-
-    setProfileUrl(res.data.data.display_url);
+      setProfileUrl(res.data.data.display_url);
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPhotoUploading(false);
+    }
   };
 
   return (
@@ -182,8 +198,11 @@ const SignUp = () => {
           </select>
         </div>
         {errorMessage && <p className="text-red-400">{errorMessage}</p>}
-        <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">
-          {isLoading ? <Loading /> : 'Sign Up'}
+        <button
+          disabled={photoUploading}
+          className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600 disabled:bg-gray-400"
+        >
+          {(isLoading || photoUploading) ? <Loading /> : 'Sign Up'}
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">

@@ -8,7 +8,7 @@ const Links = () => {
         <NavLink to="/dashboard/manage-categories">Mange Categories</NavLink>
       </li>
       <li>
-        <NavLink>Sidebar Item 2</NavLink>
+        <NavLink to='/dashboard/manage-users'>Manage Users</NavLink>
       </li>
     </>
   );

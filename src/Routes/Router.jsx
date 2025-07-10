@@ -6,6 +6,7 @@ import Forbidden from '../Pages/Others/Forbidden';
 import DashboardLayout from '../Layouts/DashboardLayout';
 import ManageCategories from '../Pages/Dashboard/Admin/ManageCategories/ManageCategories';
 import Login from '../Pages/Login/Login';
+import ManageUsers from '../Pages/Dashboard/Admin/ManageUsers/ManageUsers';
 
 export const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
         path: 'manage-categories',
         element: <ManageCategories />,
       },
+      {
+        path: 'manage-users',
+        element: <ManageUsers />
+      }
     ],
   },
 ]);
