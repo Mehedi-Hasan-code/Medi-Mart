@@ -1,16 +1,42 @@
 import React, { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import { uploadImage } from '../../../../utils/uploadImage';
+import { toast } from 'react-toastify';
 
 const ManageMedicine = () => {
+  const { privateApi } = useAxiosSecure();
   const [showModal, setShowModal] = useState(false);
+  const { register, handleSubmit, reset } = useForm();
+  const [loading, setLoading] = useState(false);
+
+
 
   // Example static options for category and company
   const categories = ['Tablet', 'Syrup', 'Injection'];
   const companies = ['Company A', 'Company B', 'Company C'];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // TODO: API call to submit form
-    setShowModal(false);
+  const onSubmit = async (data) => {
+    setLoading(true);
+    try {
+      const imageUrl = await uploadImage(data.image[0]);
+      console.log(imageUrl);
+      if (!imageUrl) {
+        toast.error('Image upload failed. Please try again.');
+        setLoading(false);
+        return;
+      }
+      const medicineInfo = { ...data, image: imageUrl };
+
+      await privateApi.post('/medicines', medicineInfo);
+      toast.success('Medicine added successfully!');
+      setShowModal(false);
+      reset();
+    } catch {
+      toast.error('Failed to add medicine.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -18,17 +44,20 @@ const ManageMedicine = () => {
       <button className="btn btn-primary" onClick={() => setShowModal(true)}>
         Add Medicine
       </button>
-
       {/* DaisyUI Modal */}
       {showModal && (
         <dialog className="modal modal-open">
-          <form method="dialog" className="modal-box" onSubmit={handleSubmit}>
+          <form
+            method="dialog"
+            className="modal-box"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <h3 className="font-bold text-lg mb-4">Add Medicine</h3>
             <div className="form-control mb-2">
               <label className="label">Item Name</label>
               <br />
               <input
-                name="itemName"
+                {...register('itemName', { required: true })}
                 type="text"
                 className="input input-bordered w-full"
                 required
@@ -38,7 +67,7 @@ const ManageMedicine = () => {
               <label className="label">Item Generic Name</label>
               <br />
               <input
-                name="genericName"
+                {...register('genericName', { required: true })}
                 type="text"
                 className="input input-bordered w-full"
                 required
@@ -48,7 +77,7 @@ const ManageMedicine = () => {
               <label className="label">Short Description</label>
               <br />
               <textarea
-                name="description"
+                {...register('description', { required: true })}
                 className="textarea textarea-bordered w-full"
                 required
               />
@@ -57,7 +86,7 @@ const ManageMedicine = () => {
               <label className="label">Image Upload</label>
               <br />
               <input
-                name="image"
+                {...register('image', { required: true })}
                 type="file"
                 className="file-input file-input-bordered w-full"
                 accept="image/*"
@@ -68,7 +97,7 @@ const ManageMedicine = () => {
               <label className="label">Category</label>
               <br />
               <select
-                name="category"
+                {...register('category', { required: true })}
                 className="w-full select select-bordered"
                 required
               >
@@ -84,7 +113,7 @@ const ManageMedicine = () => {
               <label className="label">Company</label>
               <br />
               <select
-                name="company"
+                {...register('company', { required: true })}
                 className="w-full select select-bordered"
                 required
               >
@@ -100,7 +129,7 @@ const ManageMedicine = () => {
               <label className="label">Item Mass Unit</label>
               <br />
               <select
-                name="massUnit"
+                {...register('massUnit', { required: true })}
                 className="w-full select select-bordered"
                 required
               >
@@ -112,7 +141,7 @@ const ManageMedicine = () => {
               <label className="label">Per Unit Price</label>
               <br />
               <input
-                name="price"
+                {...register('price', { required: true, min: 0 })}
                 type="number"
                 className="input input-bordered w-full"
                 required
@@ -123,8 +152,8 @@ const ManageMedicine = () => {
             <div className="form-control mb-4">
               <label className="label">Discount Percentage</label>
               <input
-              defaultValue='0'
-                name="discount"
+                {...register('discount', { min: 0, max: 100 })}
+                defaultValue="0"
                 type="number"
                 className="input input-bordered w-full"
                 min="0"
@@ -132,13 +161,21 @@ const ManageMedicine = () => {
               />
             </div>
             <div className="modal-action">
-              <button type="submit" className="btn btn-primary">
-                Submit
+              <button
+                type="submit"
+                className="btn btn-primary"
+                disabled={loading}
+              >
+                {loading ? 'Submitting...' : 'Submit'}
               </button>
               <button
                 type="button"
                 className="btn"
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  reset();
+                }}
+                disabled={loading}
               >
                 Cancel
               </button>

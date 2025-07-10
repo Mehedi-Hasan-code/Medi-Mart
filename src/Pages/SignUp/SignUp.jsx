@@ -3,15 +3,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import { toast } from 'react-toastify';
 import Loading from '../../Components/Common/Loading';
-import axios from 'axios';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { getAdditionalUserInfo } from 'firebase/auth';
+import { uploadImage } from '../../utils/uploadImage';
 
 const SignUp = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [profileUrl, setProfileUrl] = useState('');
-  const [photoUploading, setPhotoUploading] = useState(false);
+  // const [profileUrl, setProfileUrl] = useState('');
+  // const [photoUploading, setPhotoUploading] = useState(false);
 
   const navigate = useNavigate();
   const { publicApi } = useAxiosSecure();
@@ -32,15 +32,9 @@ const SignUp = () => {
     const password = form.password.value;
     const role = form.role.value;
 
-    const userInfo = {
-      name,
-      email,
-      role,
-      photoURL: profileUrl,
-      created_at: new Date().toISOString(),
-    };
-
     try {
+      // get image url
+      const profileUrl = await uploadImage(form.photo.files[0]);
       // create user in firebase
       const userCredential = await createUser(email, password);
 
@@ -55,6 +49,14 @@ const SignUp = () => {
       });
 
       // upload user to mongodb
+      const userInfo = {
+        name,
+        email,
+        role,
+        photoURL: profileUrl,
+        created_at: new Date().toISOString(),
+      };
+
       await publicApi.post('/users', userInfo);
 
       // success actions
@@ -102,27 +104,6 @@ const SignUp = () => {
     }
   };
 
-  // upload image to image bb
-  const handleImageUpload = async (e) => {
-    try {
-      setPhotoUploading(true);
-      const imageFile = e.target.files[0];
-      const formData = new FormData();
-      formData.append('image', imageFile);
-      const imgUploadUrl = `https://api.imgbb.com/1/upload?key=${
-        import.meta.env.VITE_IMGBB_API_KEY
-      }`;
-
-      const res = await axios.post(imgUploadUrl, formData);
-
-      setProfileUrl(res.data.data.display_url);
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setPhotoUploading(false);
-    }
-  };
 
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
@@ -165,7 +146,6 @@ const SignUp = () => {
               type="file"
               name="photo"
               required
-              onChange={handleImageUpload}
               accept="image/*"
               className="w-full px-4 py-3 rounded-md border dark:border-gray-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600"
             />
@@ -198,11 +178,8 @@ const SignUp = () => {
           </select>
         </div>
         {errorMessage && <p className="text-red-400">{errorMessage}</p>}
-        <button
-          disabled={photoUploading}
-          className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600 disabled:bg-gray-400"
-        >
-          {(isLoading || photoUploading) ? <Loading /> : 'Sign Up'}
+        <button className="block w-full p-3 text-center rounded-sm dark:text-gray-50 dark:bg-violet-600">
+          {isLoading ? <Loading /> : 'Sign Up'}
         </button>
       </form>
       <div className="flex items-center pt-4 space-x-1">
