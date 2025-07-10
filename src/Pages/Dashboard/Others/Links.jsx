@@ -10,6 +10,9 @@ const Links = () => {
       <li>
         <NavLink to='/dashboard/manage-users'>Manage Users</NavLink>
       </li>
+      <li>
+        <NavLink to='/dashboard/manage-medicine'>Manage Medicines</NavLink>
+      </li>
     </>
   );
 };

@@ -7,6 +7,7 @@ import DashboardLayout from '../Layouts/DashboardLayout';
 import ManageCategories from '../Pages/Dashboard/Admin/ManageCategories/ManageCategories';
 import Login from '../Pages/Login/Login';
 import ManageUsers from '../Pages/Dashboard/Admin/ManageUsers/ManageUsers';
+import ManageMedicine from '../Pages/Dashboard/Seller/ManageMedicine/ManageMedicine';
 
 export const router = createBrowserRouter([
   {
@@ -42,6 +43,10 @@ export const router = createBrowserRouter([
       {
         path: 'manage-users',
         element: <ManageUsers />
+      },
+      {
+        path: 'manage-medicine',
+        element: <ManageMedicine />
       }
     ],
   },

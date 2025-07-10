@@ -1,5 +1,8 @@
 import React from 'react';
-import { useMutation } from '@tanstack/react-query';
+import {
+  QueryClient,
+  useMutation,
+} from '@tanstack/react-query';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
@@ -7,13 +10,16 @@ import Swal from 'sweetalert2';
 const Table = ({ users }) => {
   const { privateApi } = useAxiosSecure();
 
+
   const updateRole = async ({ newRole, id }) => {
     await privateApi.patch(`/users/${id}`, { role: newRole });
   };
 
   const mutation = useMutation({
     mutationFn: updateRole,
-    onSuccess: () => toast.success('Role Updated'),
+    onSuccess: () => {
+      toast.success('Role Updated');
+    },
     onError: () => toast.error('Something Went Wrong'),
   });
 

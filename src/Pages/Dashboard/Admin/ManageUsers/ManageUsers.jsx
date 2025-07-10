@@ -11,7 +11,6 @@ const ManageUsers = () => {
     data: users,
     isLoading,
     error,
-    refetch,
   } = useQuery({
     queryKey: ['users'],
     queryFn: async () => privateApi.get('/users'),
