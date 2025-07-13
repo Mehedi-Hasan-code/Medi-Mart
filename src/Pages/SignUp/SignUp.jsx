@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import { toast } from 'react-toastify';
-import Loading from '../../Components/Common/Loading';
+import Loading from '../../Components/Loaders/Loading';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { getAdditionalUserInfo } from 'firebase/auth';
 import { uploadImage } from '../../utils/uploadImage';

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
-import Loading from '../../../../Components/Common/Loading';
 import Table from './Table';
+import DataLoading from '../../../../Components/Loaders/DataLoading';
 
 const ManageUsers = () => {
   const { privateApi } = useAxiosSecure();
@@ -17,7 +17,8 @@ const ManageUsers = () => {
   });
   console.log(users);
 
-  if (isLoading) return <Loading />;
+  if (isLoading) return <DataLoading label='Users' />
+
   if (error) return <div>Error: {error.message}</div>;
   return <div>
     <h1>Mange Users</h1>

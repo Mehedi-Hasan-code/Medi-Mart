@@ -8,6 +8,7 @@ import ManageCategories from '../Pages/Dashboard/Admin/ManageCategories/ManageCa
 import Login from '../Pages/Login/Login';
 import ManageUsers from '../Pages/Dashboard/Admin/ManageUsers/ManageUsers';
 import ManageMedicine from '../Pages/Dashboard/Seller/ManageMedicine/ManageMedicine';
+import CategoryDetails from '../Pages/CategoryDetails/CategoryDetails';
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +18,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: 'details',
+        element: <CategoryDetails />,
       },
       {
         path: 'sign-up',
@@ -42,12 +47,12 @@ export const router = createBrowserRouter([
       },
       {
         path: 'manage-users',
-        element: <ManageUsers />
+        element: <ManageUsers />,
       },
       {
         path: 'manage-medicine',
-        element: <ManageMedicine />
-      }
+        element: <ManageMedicine />,
+      },
     ],
   },
 ]);

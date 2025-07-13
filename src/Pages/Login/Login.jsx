@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Context/Auth/AuthContext';
-import Loading from '../../Components/Common/Loading';
+import Loading from '../../Components/Loaders/Loading';
 import { getAdditionalUserInfo } from 'firebase/auth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';

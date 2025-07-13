@@ -1,11 +1,12 @@
 import React from 'react';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
-import Loading from '../../../../Components/Common/Loading';
 import CategoryTable from './CategoryTable';
+import DataLoading from '../../../../Components/Loaders/DataLoading';
+import LoadingError from '../../../../Components/Loaders/LoadingError';
 
 const ManageCategories = () => {
-  const { privateApi } = useAxiosSecure();
+  const { publicApi } = useAxiosSecure();
 
   const {
     data: categories,
@@ -13,11 +14,12 @@ const ManageCategories = () => {
     error,
   } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => privateApi.get('/categories'),
+    queryFn: () => publicApi.get('/categories'),
   });
 
-  if (isLoading) return <Loading />;
-  if (error) return <div>Error: {error.message}</div>;
+  if (isLoading) return <DataLoading label= 'Categories' />
+
+  if (error) return <LoadingError label='categories' showAction={true}/>;
 
   return (
     <div>
