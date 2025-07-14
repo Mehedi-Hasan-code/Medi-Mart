@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import MedicinesTable from './MedicinesTable';
-import DetailsModal from './DetailsModal';
+import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 
 const CategoryDetails = () => {
   const { publicApi } = useAxiosSecure();

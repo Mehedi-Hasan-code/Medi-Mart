@@ -1,10 +1,35 @@
 import { Button } from '@headlessui/react';
 import React from 'react';
 
-const MedicinesTable = ({ medicines, openModal }) => {
+const ShopTable = ({
+  paginatedMedicines,
+  handleItemsPerPageChange,
+  itemsPerPage,
+  currentPage,
+  goToPage,
+  totalPages,
+  openModal,
+}) => {
   return (
-    <div className="overflow-x-auto max-w-7xl mx-auto">
+    <div className="overflow-x-auto">
+      {/* Items per page selector */}
+      <div className="flex items-center mb-2">
+        <label className="mr-2 font-medium">Items per page:</label>
+        <select
+          className="select select-bordered select-sm w-24"
+          value={itemsPerPage}
+          onChange={handleItemsPerPageChange}
+        >
+          {[5, 10, 20, 50].map((num) => (
+            <option key={num} value={num}>
+              {num}
+            </option>
+          ))}
+        </select>
+      </div>
+
       <table className="table">
+        {/* head */}
         <thead>
           <tr>
             <th>
@@ -18,8 +43,8 @@ const MedicinesTable = ({ medicines, openModal }) => {
           </tr>
         </thead>
         <tbody>
-          {medicines?.map((medicine, index) => (
-            <tr key={index}>
+          {paginatedMedicines.map((medicine, index) => (
+            <tr key={medicine._id || index}>
               <th>
                 <label>{index + 1}</label>
               </th>
@@ -42,9 +67,10 @@ const MedicinesTable = ({ medicines, openModal }) => {
                 </div>
               </td>
               <td>{medicine.company}</td>
-              <td>${medicine.price}</td>
-              <td>{medicine.discount}%</td>
+              <td>{medicine.price}</td>
+              <td>{medicine.discount}</td>
               <td>
+                {' '}
                 <div className="join join-vertical">
                   <Button
                     onClick={() => openModal(medicine)}
@@ -88,8 +114,36 @@ const MedicinesTable = ({ medicines, openModal }) => {
           ))}
         </tbody>
       </table>
+      {/* Pagination Controls */}
+      <div className="flex justify-center mt-4 gap-2">
+        <button
+          className="btn btn-sm"
+          onClick={() => goToPage(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          Prev
+        </button>
+        {[...Array(totalPages)].map((_, idx) => (
+          <button
+            key={idx + 1}
+            className={`btn btn-sm ${
+              currentPage === idx + 1 ? 'btn-active' : ''
+            }`}
+            onClick={() => goToPage(idx + 1)}
+          >
+            {idx + 1}
+          </button>
+        ))}
+        <button
+          className="btn btn-sm"
+          onClick={() => goToPage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
 
-export default MedicinesTable;
+export default ShopTable;

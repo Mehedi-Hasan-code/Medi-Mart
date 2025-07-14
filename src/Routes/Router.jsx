@@ -9,6 +9,7 @@ import Login from '../Pages/Login/Login';
 import ManageUsers from '../Pages/Dashboard/Admin/ManageUsers/ManageUsers';
 import ManageMedicine from '../Pages/Dashboard/Seller/ManageMedicine/ManageMedicine';
 import CategoryDetails from '../Pages/CategoryDetails/CategoryDetails';
+import Shop from '../Pages/Shop/Shop';
 
 export const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <Home />,
+      },
+      {
+        path: 'shop',
+        element: <Shop />,
       },
       {
         path: 'details',

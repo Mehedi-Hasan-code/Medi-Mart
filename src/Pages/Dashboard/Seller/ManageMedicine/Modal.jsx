@@ -34,7 +34,7 @@ const Modal = ({ onSubmit, categories, loading, setShowModal, register, handleSu
           <label className="label">Short Description</label>
           <br />
           <textarea
-            {...register('description', { required: true })}
+            {...register('shortDescription', { required: true })}
             className="textarea textarea-bordered w-full"
             required
           />
