@@ -10,6 +10,7 @@ import ManageUsers from '../Pages/Dashboard/Admin/ManageUsers/ManageUsers';
 import ManageMedicine from '../Pages/Dashboard/Seller/ManageMedicine/ManageMedicine';
 import CategoryDetails from '../Pages/CategoryDetails/CategoryDetails';
 import Shop from '../Pages/Shop/Shop';
+import Cart from '../Pages/Cart/Cart';
 
 export const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ export const router = createBrowserRouter([
       {
         path: 'details',
         element: <CategoryDetails />,
+      },
+      {
+        path: 'cart',
+        element: <Cart />,
       },
       {
         path: 'sign-up',

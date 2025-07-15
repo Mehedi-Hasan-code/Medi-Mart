@@ -1,5 +1,6 @@
 import { Button } from '@headlessui/react';
-import React from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from '../../Context/Cart/CartContext';
 
 const ShopTable = ({
   paginatedMedicines,
@@ -10,6 +11,7 @@ const ShopTable = ({
   totalPages,
   openModal,
 }) => {
+  const { addItem } = useContext(CartContext);
   return (
     <div className="overflow-x-auto">
       {/* Items per page selector */}
@@ -91,7 +93,19 @@ const ShopTable = ({
                     </svg>
                     Details
                   </Button>
-                  <button className="btn join-item flex items-center gap-2">
+                  <button 
+                    className="btn join-item flex items-center gap-2"
+                    onClick={() => addItem({
+                      id: medicine._id,
+                      name: medicine.itemName,
+                      price: medicine.price,
+                      discountedPrice: (Number(medicine.price) * (1 - (Number(medicine.discount) / 100))).toFixed(2),
+                      image: medicine.image,
+                      company: medicine.company,
+                      genericName: medicine.genericName,
+                      discount: medicine.discount
+                    })}
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="w-4 h-4"
