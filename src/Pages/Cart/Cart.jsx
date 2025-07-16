@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import { FaTrash, FaPlus, FaMinus } from 'react-icons/fa';
 import { CartContext } from '../../Context/Cart/CartContext';
+import { AuthContext } from '../../Context/Auth/AuthContext';
+import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const {
@@ -12,8 +15,11 @@ const Cart = () => {
     updateQuantity,
     clearCart,
   } = useContext(CartContext);
+  const { user } = useContext(AuthContext);
+  const { privateApi } = useAxiosSecure();
 
   const groupItemsBySeller = () => {
+    if (!items) return [];
     const sellersMap = {};
 
     items.forEach((item) => {
@@ -30,8 +36,39 @@ const Cart = () => {
       sellersMap[item.seller].totalAmount +=
         Number(item.discountedPrice) * Number(item.quantity);
     });
-    console.log(sellersMap)
+    console.table(Object.values(sellersMap));
     return Object.values(sellersMap);
+  };
+
+
+
+  const handleCheckout = async () => {
+    try {
+      if (!user) {
+        throw new Error('Please log in to proceed with checkout');
+      }
+
+      const orderData = {
+        buyer: user.email,
+        sellers: groupItemsBySeller(),
+        totalPrice: discountedTotal,
+        paymentStatus: 'pending',
+        paymentMethod: 'stripe',
+        paymentDate: new Date().toISOString(),
+      };
+
+      const response = await privateApi.post('/checkout', orderData);
+      console.log('Checkout response:', response);
+
+      if (response) {
+        window.location.href = response;
+      } else {
+        throw new Error('Invalid response from checkout API');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast.warn(error.message || 'An error occurred during checkout');
+    }
   };
 
   if (items.length === 0) {
@@ -142,8 +179,10 @@ const Cart = () => {
                   ${Number(discountedTotal).toFixed(2)}
                 </p>
               </div>
-              <button 
-              onClick={() => groupItemsBySeller(items)} className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:from-blue-600 hover:to-blue-800 transition">
+              <button
+                onClick={handleCheckout}
+                className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-blue-700 text-white px-8 py-3 rounded-xl font-bold text-lg shadow-lg hover:from-blue-600 hover:to-blue-800 transition"
+              >
                 Proceed to Checkout
               </button>
             </div>
