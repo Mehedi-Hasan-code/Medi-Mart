@@ -103,7 +103,8 @@ const ShopTable = ({
                       image: medicine.image,
                       company: medicine.company,
                       genericName: medicine.genericName,
-                      discount: medicine.discount
+                      discount: medicine.discount,
+                      seller: medicine.seller,
                     })}
                   >
                     <svg
