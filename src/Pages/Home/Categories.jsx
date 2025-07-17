@@ -14,7 +14,9 @@ const Categories = () => {
     error,
   } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => publicApi.get('/categories'),
+    queryFn: async () => {
+      return await publicApi.get('/categories');
+    },
   });
 
   if (isLoading) {
