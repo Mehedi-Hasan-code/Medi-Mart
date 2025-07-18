@@ -4,6 +4,7 @@ import { CartContext } from '../../Context/Cart/CartContext';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
+import { groupItemsBySeller } from '../../utils/groupItemsBySeller';
 
 const Cart = () => {
   const {
@@ -18,27 +19,7 @@ const Cart = () => {
   const { user } = useContext(AuthContext);
   const { privateApi } = useAxiosSecure();
 
-  const groupItemsBySeller = () => {
-    if (!items) return [];
-    const sellersMap = {};
-
-    items.forEach((item) => {
-      if (!sellersMap[item.seller]) {
-        sellersMap[item.seller] = {
-          seller: item.seller,
-          items: [],
-          totalAmount: 0,
-        };
-      }
-      sellersMap[item.seller].items.push({
-        ...item,
-      });
-      sellersMap[item.seller].totalAmount +=
-        Number(item.discountedPrice) * Number(item.quantity);
-    });
-    console.table(Object.values(sellersMap));
-    return Object.values(sellersMap);
-  };
+  
 
 
 
@@ -47,17 +28,11 @@ const Cart = () => {
       if (!user) {
         throw new Error('Please log in to proceed with checkout');
       }
+      const sellersGroup = groupItemsBySeller(items);
+      console.log(sellersGroup)
 
-      const orderData = {
-        buyer: user.email,
-        sellers: groupItemsBySeller(),
-        totalPrice: discountedTotal,
-        paymentStatus: 'pending',
-        paymentMethod: 'stripe',
-        paymentDate: new Date().toISOString(),
-      };
 
-      const response = await privateApi.post('/checkout', orderData);
+      const response = await privateApi.post('/checkout', sellersGroup);
       console.log('Checkout response:', response);
 
       if (response) {

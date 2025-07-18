@@ -11,7 +11,6 @@ import ManageMedicine from '../Pages/Dashboard/Seller/ManageMedicine/ManageMedic
 import CategoryDetails from '../Pages/CategoryDetails/CategoryDetails';
 import Shop from '../Pages/Shop/Shop';
 import Cart from '../Pages/Cart/Cart';
-import Success from '../Pages/Payment/Success';
 import Canceled from '../Pages/Payment/Canceled';
 import InvoiceLayout from '../Layouts/InvoiceLayout';
 

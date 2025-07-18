@@ -2,38 +2,55 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CartContext } from '../../Context/Cart/CartContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
+import { AuthContext } from '../../Context/Auth/AuthContext';
+import { groupItemsBySeller } from '../../utils/groupItemsBySeller';
 
 const Success = () => {
+  const { user, isUserLoading } = useContext(AuthContext);
+  const { items, discountedTotal, clearCart } = useContext(CartContext);
   const [searchParams] = useSearchParams();
   const { privateApi } = useAxiosSecure();
   const navigate = useNavigate();
-  const { clearCart } = useContext(CartContext);
   const [orderData, setOrderData] = useState(null);
 
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    if (sessionId) {
+    if (sessionId && !isUserLoading && user && user.email) {
       const fetchOrder = async () => {
         try {
-          const response = await privateApi.get(
-            `/checkout?session_id=${sessionId}`
-          );
+          const orderDetails = {
+            orderId: `TRK_${Date.now()}_${Math.random()
+              .toString(36)
+              .substr(2, 9)}`,
+            buyer: user.email,
+            sellersGroup: groupItemsBySeller(items),
+            totalPrice: discountedTotal.toFixed(2),
+            paymentStatus: 'pending',
+            paymentMethod: 'stripe',
+            paymentDate: new Date().toISOString(),
+          };
 
-          if (response.success === true) {
+          const response = await privateApi.post(
+            `/checkout/verify-payment?session_id=${sessionId}`,
+            orderDetails
+          );
+          console.log(response);
+
+          if (response?.payment_success === true) {
             setOrderData(response);
-            clearCart(); // Clear cart after successful order
+            clearCart();
           } else {
-            navigate('/payment'); // Redirect to payment if not successful
+            navigate('/cart');
+            throw new Error('Payment not successful');
           }
         } catch (error) {
           console.error('Error fetching order:', error);
-          navigate('/payment');
         }
       };
       fetchOrder();
     }
-  }, [sessionId]);
+  }, [sessionId, isUserLoading, user]);
 
   if (!orderData) {
     return (
@@ -145,46 +162,51 @@ const Success = () => {
           <div className="border-t border-gray-200 pt-8">
             <h2 className="text-xl font-semibold mb-6">Items Ordered</h2>
             <div className="space-y-4">
-              {orderData.items.data.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex items-center p-6 bg-gray-50 rounded-lg"
-                >
-                  <div className="flex-shrink-0 w-24 h-24">
-                    <img
-                      src={item.price.product.images[0]}
-                      alt={item.description}
-                      className="w-full h-full object-cover rounded-lg"
-                    />
-                  </div>
-                  <div className="ml-6 flex-1 min-w-0">
-                    <h3 className="font-medium truncate">{item.description}</h3>
-                    <div className="mt-1 flex items-center text-sm text-gray-600 space-x-4">
-                      <span>Quantity: {item.quantity}</span>
-                      <span>Unit Price: ${item.price.unit_amount / 100}</span>
+              {Array.isArray(orderData?.items?.data) &&
+                orderData.items.data.map((item, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center p-6 bg-gray-50 rounded-lg"
+                  >
+                    <div className="flex-shrink-0 w-24 h-24">
+                      <img
+                        src={item.price.product.images[0]}
+                        alt={item.description}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
                     </div>
-                    <div className="mt-2 flex items-center text-sm text-gray-500">
-                      <svg
-                        className="flex-shrink-0 h-5 w-5 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <span className="ml-2">Sold by {item.price.product.metadata.seller}</span>
+                    <div className="ml-6 flex-1 min-w-0">
+                      <h3 className="font-medium truncate">
+                        {item.description}
+                      </h3>
+                      <div className="mt-1 flex items-center text-sm text-gray-600 space-x-4">
+                        <span>Quantity: {item.quantity}</span>
+                        <span>Unit Price: ${item.price.unit_amount / 100}</span>
+                      </div>
+                      <div className="mt-2 flex items-center text-sm text-gray-500">
+                        <svg
+                          className="flex-shrink-0 h-5 w-5 text-gray-400"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                          />
+                        </svg>
+                        <span className="ml-2">
+                          Sold by {item.price.product.metadata.seller}
+                        </span>
+                      </div>
+                    </div>
+                    <div className="text-right text-lg font-semibold">
+                      ${item.amount_total / 100}
                     </div>
                   </div>
-                  <div className="text-right text-lg font-semibold">
-                    ${item.amount_total / 100}
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
 
             <div className="mt-8 border-t border-gray-200 pt-6">
