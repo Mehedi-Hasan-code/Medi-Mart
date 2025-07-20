@@ -39,6 +39,7 @@ const Success = () => {
 
           if (response?.payment_success === true) {
             setOrderData(response);
+            console.log(response)
             clearCart();
           } else {
             navigate('/cart');

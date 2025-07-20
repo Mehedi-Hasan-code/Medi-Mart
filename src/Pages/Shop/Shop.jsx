@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import ShopTable from './ShopTable';
-import LoadingError from '../../Components/Loaders/LoadingError';
+import LoadingError from '../../Components/Common/States/LoadingError';
 import DataLoading from '../../Components/Loaders/DataLoading';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 const Shop = () => {
@@ -70,7 +70,11 @@ const Shop = () => {
         handleItemsPerPageChange={handleItemsPerPageChange}
         openModal={openModal}
       />
-      <DetailsModal isOpen={isOpen} close={closeModal} medicine={selectedMedicine} />
+      <DetailsModal
+        isOpen={isOpen}
+        close={closeModal}
+        medicine={selectedMedicine}
+      />
     </div>
   );
 };

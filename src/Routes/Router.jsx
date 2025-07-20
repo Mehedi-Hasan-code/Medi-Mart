@@ -13,6 +13,12 @@ import Shop from '../Pages/Shop/Shop';
 import Cart from '../Pages/Cart/Cart';
 import Canceled from '../Pages/Payment/Canceled';
 import InvoiceLayout from '../Layouts/InvoiceLayout';
+import ManagePayments from '../Pages/Dashboard/Admin/ManagePayments/ManagePayments';
+import MyPayments from '../Pages/Dashboard/User/MyPayments/MyPayments';
+import DashboardRouteElement from '../Pages/Dashboard/Others/DashboardRouteElement';
+import PaymentHistory from '../Pages/Dashboard/Seller/PaymentHistory/PaymentHistory';
+import SalesReport from '../Pages/Dashboard/Admin/SalesReport/SalesReport';
+import AskForAdvertisement from '../Pages/Dashboard/Seller/AskForAdvertisement/AskForAdvertisement';
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +43,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'canceled',
-        element: <Canceled />
+        element: <Canceled />,
       },
       {
         path: 'sign-up',
@@ -58,8 +64,16 @@ export const router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
+        index: true,
+        element: <DashboardRouteElement />,
+      },
+      {
         path: 'manage-categories',
         element: <ManageCategories />,
+      },
+      {
+        path: 'manage-payments',
+        element: <ManagePayments />,
       },
       {
         path: 'manage-users',
@@ -69,10 +83,26 @@ export const router = createBrowserRouter([
         path: 'manage-medicine',
         element: <ManageMedicine />,
       },
+      {
+        path: 'sales-report',
+        element: <SalesReport />
+      },
+      {
+        path: 'payment-history',
+        element: <PaymentHistory />,
+      },
+      {
+        path: 'ask-for-advertisement',
+        element: <AskForAdvertisement />
+      },
+      {
+        path: 'payments',
+        element: <MyPayments />,
+      },
     ],
   },
   {
     path: '/complete',
-    element: <InvoiceLayout />
-  }
+    element: <InvoiceLayout />,
+  },
 ]);

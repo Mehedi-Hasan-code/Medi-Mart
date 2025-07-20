@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import DataLoading from '../../Components/Loaders/DataLoading';
-import LoadingError from '../../Components/Loaders/LoadingError';
+import LoadingError from '../../Components/Common/States/LoadingError';
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -95,7 +95,9 @@ const Categories = () => {
 
                     {/* View Details Button */}
                     <button
-                      onClick={() => navigate(`/details?category=${category.categoryName}`)}
+                      onClick={() =>
+                        navigate(`/details?category=${category.categoryName}`)
+                      }
                       className="w-full btn btn-primary btn-sm"
                     >
                       View Details
