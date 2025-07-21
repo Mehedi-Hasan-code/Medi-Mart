@@ -14,6 +14,9 @@ const Links = () => {
           Ask For Advertisement
         </NavLink>
       </li>
+      <li>
+        <NavLink to="/dashboard/manage-ads">Manage Ads</NavLink>
+      </li>
       {role === 'admin' && (
         <>
           <li>

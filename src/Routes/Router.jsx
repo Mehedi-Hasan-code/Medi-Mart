@@ -19,6 +19,7 @@ import DashboardRouteElement from '../Pages/Dashboard/Others/DashboardRouteEleme
 import PaymentHistory from '../Pages/Dashboard/Seller/PaymentHistory/PaymentHistory';
 import SalesReport from '../Pages/Dashboard/Admin/SalesReport/SalesReport';
 import AskForAdvertisement from '../Pages/Dashboard/Seller/AskForAdvertisement/AskForAdvertisement';
+import ManageAds from '../Pages/Dashboard/Admin/ManageAds/ManageAds';
 
 export const router = createBrowserRouter([
   {
@@ -82,6 +83,10 @@ export const router = createBrowserRouter([
       {
         path: 'manage-medicine',
         element: <ManageMedicine />,
+      },
+      {
+        path: 'manage-ads',
+        element: <ManageAds />
       },
       {
         path: 'sales-report',
