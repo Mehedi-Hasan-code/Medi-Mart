@@ -3,6 +3,8 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
+  getFilteredRowModel,
+  getSortedRowModel,
 } from '@tanstack/react-table';
 
 // format duplicate-removal logic
@@ -42,6 +44,9 @@ const groupOrders = (data) => {
 
 const TanstackTable = ({ data }) => {
   // Prepare TanStack Table columns for cell access
+  const [globalFilter, setGlobalFilter] = useState('');
+  const [sorting, setSorting] = useState([]);
+
   const columns = useMemo(
     () => [
       { accessorKey: 'orderId', header: 'Order' },
@@ -101,22 +106,52 @@ const TanstackTable = ({ data }) => {
   const table = useReactTable({
     data: flatRows,
     columns,
+    state: { globalFilter, sorting },
+    onGlobalFilterChange: setGlobalFilter,
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    globalFilterFn: 'auto',
   });
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Sales Report</h2>
+      {/* Global Filter */}
+      <div className="mb-4">
+        <input
+          type="text"
+          className="border p-2 rounded w-full max-w-xs"
+          placeholder="Search all columns..."
+          value={globalFilter}
+          onChange={e => setGlobalFilter(e.target.value)}
+        />
+      </div>
       <div className="overflow-x-auto">
         <table className="min-w-full border border-gray-300">
           <thead className="bg-gray-100">
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => (
-                  <th className="p-2 border text-left" key={header.id}>
-                    {flexRender(header.column.columnDef.header, header.getContext())}
-                  </th>
-                ))}
+                {headerGroup.headers.map(header => {
+                  // Sorting indicator
+                  const isSortable = header.column.getCanSort();
+                  const sortDir = header.column.getIsSorted();
+                  return (
+                    <th
+                      className={`p-2 border text-left select-none cursor-pointer ${isSortable ? 'hover:bg-gray-200' : ''}`}
+                      key={header.id}
+                      onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
+                    >
+                      <span className="flex items-center gap-1">
+                        {flexRender(header.column.columnDef.header, header.getContext())}
+                        {isSortable && (
+                          sortDir === 'asc' ? <span>▲</span> : sortDir === 'desc' ? <span>▼</span> : <span className="opacity-30">⇅</span>
+                        )}
+                      </span>
+                    </th>
+                  );
+                })}
               </tr>
             ))}
           </thead>
