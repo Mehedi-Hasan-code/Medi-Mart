@@ -2,6 +2,7 @@ import React from 'react'
 import Categories from './Categories'
 import Hero from './Hero'
 import Discount from './Discount'
+import Testimonial from './Testimonial'
 
 const Home = () => {
   return (
@@ -9,6 +10,7 @@ const Home = () => {
       <Hero />
       <Categories />
       <Discount />
+      <Testimonial />
 
     </>
   )

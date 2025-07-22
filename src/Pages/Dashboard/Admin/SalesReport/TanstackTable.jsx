@@ -25,11 +25,11 @@ const groupOrders = (data) => {
   });
 
   // For each order, group items by consecutive sellers
-  return Object.values(orders).map(order => {
+  return Object.values(orders).map((order) => {
     const sellerGroups = [];
     let lastSeller = null;
     let currentGroup = null;
-    order.items.forEach(item => {
+    order.items.forEach((item) => {
       if (item.seller !== lastSeller) {
         if (currentGroup) sellerGroups.push(currentGroup);
         currentGroup = { seller: item.seller, items: [] };
@@ -46,6 +46,8 @@ const TanstackTable = ({ data }) => {
   // Prepare TanStack Table columns for cell access
   const [globalFilter, setGlobalFilter] = useState('');
   const [sorting, setSorting] = useState([]);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
   const columns = useMemo(
     () => [
@@ -53,20 +55,52 @@ const TanstackTable = ({ data }) => {
       { accessorKey: 'buyer', header: 'Buyer Email' },
       { accessorKey: 'seller', header: 'Seller' },
       { accessorKey: 'itemName', header: 'Item' },
-      { accessorKey: 'itemPrice', header: 'Item Price', cell: info => `$${info.getValue()?.toFixed(2)}` },
-      { accessorKey: 'totalPrice', header: 'Total Price', cell: info => info.getValue() ? `$${info.getValue()?.toFixed(2)}` : '' },
-      { accessorKey: 'status', header: 'Status', cell: info => (
-        <span className={`px-2 py-1 rounded text-white ${info.getValue() === 'paid' ? 'bg-green-500' : 'bg-yellow-500'}`}>
-          {info.getValue()}
-        </span>
-      ) },
+      {
+        accessorKey: 'itemPrice',
+        header: 'Item Price',
+        cell: (info) => `$${info.getValue()?.toFixed(2)}`,
+      },
+      {
+        accessorKey: 'totalPrice',
+        header: 'Total Price',
+        cell: (info) =>
+          info.getValue() ? `$${info.getValue()?.toFixed(2)}` : '',
+      },
+      {
+        accessorKey: 'status',
+        header: 'Status',
+        cell: (info) => (
+          <span
+            className={`px-2 py-1 rounded text-white ${
+              info.getValue() === 'paid' ? 'bg-green-500' : 'bg-yellow-500'
+            }`}
+          >
+            {info.getValue()}
+          </span>
+        ),
+      },
     ],
     []
   );
 
-  // Group for rowSpan logic
-  const orders = useMemo(() => groupOrders(data), [data]);
+  // Date range filter logic
+  const filteredData = useMemo(() => {
+    if (!startDate && !endDate) return data;
+    return data.filter((row) => {
+      if (!row.paymentDate) return false;
+      const paymentTime = new Date(row.paymentDate).getTime();
+      const afterStart = startDate
+        ? paymentTime >= new Date(startDate).getTime()
+        : true;
+      const beforeEnd = endDate
+        ? paymentTime <= new Date(endDate).getTime()
+        : true;
+      return afterStart && beforeEnd;
+    });
+  }, [data, startDate, endDate]);
 
+  // Group for rowSpan logic
+  const orders = useMemo(() => groupOrders(filteredData), [filteredData]);
 
   // Pagination state
   const [pageIndex, setPageIndex] = useState(0);
@@ -80,9 +114,9 @@ const TanstackTable = ({ data }) => {
 
   // Flatten only the paginated orders
   const flatRows = useMemo(() => {
-    return paginatedOrders.flatMap(order => {
+    return paginatedOrders.flatMap((order) => {
       let rows = [];
-      order.sellerGroups.forEach(sellerGroup => {
+      order.sellerGroups.forEach((sellerGroup) => {
         sellerGroup.items.forEach((item, idx) => {
           rows.push({
             orderId: order.orderId,
@@ -92,7 +126,10 @@ const TanstackTable = ({ data }) => {
             itemPrice: item.itemPrice,
             totalPrice: order.totalPrice,
             status: order.status,
-            _orderRowSpan: order.sellerGroups.reduce((sum, g) => sum + g.items.length, 0),
+            _orderRowSpan: order.sellerGroups.reduce(
+              (sum, g) => sum + g.items.length,
+              0
+            ),
             _isFirstOrderRow: rows.length === 0,
             _sellerRowSpan: sellerGroup.items.length,
             _isFirstSellerRow: idx === 0,
@@ -116,38 +153,77 @@ const TanstackTable = ({ data }) => {
   });
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Sales Report</h2>
-      {/* Global Filter */}
-      <div className="mb-4">
-        <input
-          type="text"
-          className="border p-2 rounded w-full max-w-xs"
-          placeholder="Search all columns..."
-          value={globalFilter}
-          onChange={e => setGlobalFilter(e.target.value)}
-        />
-      </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full border border-gray-300">
-          <thead className="bg-gray-100">
-            {table.getHeaderGroups().map(headerGroup => (
+    <div className="p-4 min-h-screen bg-gradient-to-br from-blue-50 via-green-50 to-white">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-extrabold mb-6 text-green-700 flex items-center gap-2">
+          <svg className="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2a4 4 0 014-4h3m-7 6v2a4 4 0 004 4h3m-7-6H5a2 2 0 01-2-2v-3a2 2 0 012-2h3m0 0V5a2 2 0 012-2h3a2 2 0 012 2v3" /></svg>
+          Sales Report
+        </h2>
+        {/* Date Range Filter */}
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:gap-6 sm:items-end bg-white/80 rounded-xl shadow p-4 border border-blue-100">
+  <div className="w-full sm:w-auto">
+    <label className="block text-sm font-semibold mb-1 text-blue-700">Start Date</label>
+    <input
+      type="date"
+      className="border-2 border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 p-2 rounded-lg outline-none transition w-full sm:w-40"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+    />
+  </div>
+  <div className="w-full sm:w-auto">
+    <label className="block text-sm font-semibold mb-1 text-blue-700">End Date</label>
+    <input
+      type="date"
+      className="border-2 border-blue-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 p-2 rounded-lg outline-none transition w-full sm:w-40"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+    />
+  </div>
+  <div className="w-full sm:flex-1">
+    <label className="block text-sm font-semibold mb-1 text-blue-700">Search</label>
+    <input
+      type="text"
+      className="border-2 border-green-200 focus:border-green-400 focus:ring-2 focus:ring-green-100 p-2 rounded-lg outline-none transition w-full"
+      placeholder="Search all columns..."
+      value={globalFilter}
+      onChange={(e) => setGlobalFilter(e.target.value)}
+    />
+  </div>
+</div>
+        <div className="overflow-x-auto">
+        <table className="min-w-full border border-blue-200 rounded-xl shadow-xl bg-white">
+          <thead className="bg-gradient-to-r from-green-100 to-blue-100">
+            {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
-                {headerGroup.headers.map(header => {
+                {headerGroup.headers.map((header) => {
                   // Sorting indicator
                   const isSortable = header.column.getCanSort();
                   const sortDir = header.column.getIsSorted();
                   return (
                     <th
-                      className={`p-2 border text-left select-none cursor-pointer ${isSortable ? 'hover:bg-gray-200' : ''}`}
+                      className={`p-3 border-b border-blue-200 text-left select-none cursor-pointer font-semibold text-blue-700 text-base ${
+                        isSortable ? 'hover:bg-blue-50 transition' : ''
+                      }`}
                       key={header.id}
-                      onClick={isSortable ? header.column.getToggleSortingHandler() : undefined}
+                      onClick={
+                        isSortable
+                          ? header.column.getToggleSortingHandler()
+                          : undefined
+                      }
                     >
                       <span className="flex items-center gap-1">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {isSortable && (
-                          sortDir === 'asc' ? <span>▲</span> : sortDir === 'desc' ? <span>▼</span> : <span className="opacity-30">⇅</span>
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
                         )}
+                        {isSortable &&
+                          (sortDir === 'asc' ? (
+                            <span>▲</span>
+                          ) : sortDir === 'desc' ? (
+                            <span>▼</span>
+                          ) : (
+                            <span className="opacity-30">⇅</span>
+                          ))}
                       </span>
                     </th>
                   );
@@ -159,68 +235,97 @@ const TanstackTable = ({ data }) => {
             {table.getRowModel().rows.map((row) => {
               const r = row.original;
               return (
-                <tr key={row.id}>
+                <tr
+                  key={row.id}
+                  className="hover:bg-blue-50/50 transition border-b border-blue-100"
+                >
                   {/* Order ID */}
-                  {r._isFirstOrderRow ? (
-                    <td className="p-2 border" rowSpan={r._orderRowSpan}>{r.orderId}</td>
-                  ) : null}
+                  {r._isFirstOrderRow && (
+                    <td className="p-3 font-bold text-blue-900 bg-blue-50/50 border-r border-blue-100 rounded-l-lg" rowSpan={r._orderRowSpan}>
+                      {r.orderId}
+                    </td>
+                  )}
                   {/* Buyer Email */}
-                  {r._isFirstOrderRow ? (
-                    <td className="p-2 border" rowSpan={r._orderRowSpan}>{r.buyer}</td>
-                  ) : null}
+                  {r._isFirstOrderRow && (
+                    <td className="p-3 font-medium text-green-900 bg-green-50/50 border-r border-green-100" rowSpan={r._orderRowSpan}>
+                      {r.buyer}
+                    </td>
+                  )}
                   {/* Seller (merged if consecutive) */}
-                  {r._isFirstSellerRow ? (
-                    <td className="p-2 border" rowSpan={r._sellerRowSpan}>{r.seller}</td>
-                  ) : null}
+                  {r._isFirstSellerRow && (
+                    <td className="p-3 text-blue-800 bg-blue-100/50 border-r border-blue-50" rowSpan={r._sellerRowSpan}>
+                      {r.seller}
+                    </td>
+                  )}
                   {/* Item */}
-                  <td className="p-2 border">{r.itemName}</td>
+                  <td className="p-3 text-gray-800">{r.itemName}</td>
                   {/* Item Price */}
-                  <td className="p-2 border">{flexRender(columns[4].cell, { getValue: () => r.itemPrice })}</td>
+                  <td className="p-3 text-right text-blue-700">
+                    {flexRender(columns[4].cell, {
+                      getValue: () => r.itemPrice,
+                    })}
+                  </td>
                   {/* Total Price */}
-                  {r._isFirstOrderRow ? (
-                    <td className="p-2 border" rowSpan={r._orderRowSpan}>{flexRender(columns[5].cell, { getValue: () => r.totalPrice })}</td>
-                  ) : null}
+                  {r._isFirstOrderRow && (
+                    <td className="p-3 font-semibold text-right text-green-800 bg-green-50/50 border-l border-green-100" rowSpan={r._orderRowSpan}>
+                      {flexRender(columns[5].cell, {
+                        getValue: () => r.totalPrice,
+                      })}
+                    </td>
+                  )}
                   {/* Status */}
-                  {r._isFirstOrderRow ? (
-                    <td className="p-2 border" rowSpan={r._orderRowSpan}>{flexRender(columns[6].cell, { getValue: () => r.status })}</td>
-                  ) : null}
+                  {r._isFirstOrderRow && (
+                    <td className="p-3" rowSpan={r._orderRowSpan}>
+                      {flexRender(columns[6].cell, {
+                        getValue: () => r.status,
+                      })}
+                    </td>
+                  )}
                 </tr>
               );
             })}
-
           </tbody>
         </table>
       </div>
       {/* Pagination Controls */}
-      <div className="flex items-center gap-2 mt-4">
-        <button
-          className="border px-2 py-1 rounded"
-          onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
-          disabled={pageIndex === 0}
-        >
-          Previous
-        </button>
-        <span>Page {pageIndex + 1} of {pageCount}</span>
-        <button
-          className="border px-2 py-1 rounded"
-          onClick={() => setPageIndex((prev) => Math.min(prev + 1, pageCount - 1))}
-          disabled={pageIndex >= pageCount - 1}
-        >
-          Next
-        </button>
+      <div className="flex flex-wrap items-center gap-4 mt-6 justify-between bg-white/80 rounded-xl shadow p-4 border border-blue-100">
+        <div className="flex items-center gap-2">
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() => setPageIndex((prev) => Math.max(prev - 1, 0))}
+            disabled={pageIndex === 0}
+          >
+            Previous
+          </button>
+          <span className="text-blue-700 font-medium">
+            Page {pageIndex + 1} of {pageCount}
+          </span>
+          <button
+            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow transition disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() =>
+              setPageIndex((prev) => Math.min(prev + 1, pageCount - 1))
+            }
+            disabled={pageIndex >= pageCount - 1}
+          >
+            Next
+          </button>
+        </div>
         <select
-          className="border p-1 rounded ml-2"
+          className="border-2 border-green-200 focus:border-green-400 p-2 rounded-lg ml-2 bg-white text-green-700 font-semibold shadow"
           value={pageSize}
-          onChange={e => {
+          onChange={(e) => {
             setPageSize(Number(e.target.value));
             setPageIndex(0);
           }}
         >
-          {[5, 10, 20, 30, 40, 50].map(size => (
-            <option key={size} value={size}>Show {size}</option>
+          {[5, 10, 20, 30, 40, 50].map((size) => (
+            <option key={size} value={size}>
+              Show {size}
+            </option>
           ))}
         </select>
       </div>
+    </div>
     </div>
   );
 };
