@@ -9,14 +9,7 @@ const Links = () => {
       <li>
         <NavLink to="/dashboard">Dashboard</NavLink>
       </li>
-      <li>
-        <NavLink to="/dashboard/ask-for-advertisement">
-          Ask For Advertisement
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/dashboard/manage-ads">Manage Ads</NavLink>
-      </li>
+
       {role === 'admin' && (
         <>
           <li>
@@ -48,6 +41,11 @@ const Links = () => {
           </li>
           <li>
             <NavLink to="/dashboard/payment-history">Payment History</NavLink>
+          </li>
+          <li>
+            <NavLink to="/dashboard/ask-for-advertisement">
+              Ask For Advertisement
+            </NavLink>
           </li>
         </>
       )}

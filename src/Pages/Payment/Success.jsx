@@ -4,6 +4,8 @@ import { CartContext } from '../../Context/Cart/CartContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import { groupItemsBySeller } from '../../utils/groupItemsBySeller';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 const Success = () => {
   const { user, isUserLoading } = useContext(AuthContext);
@@ -39,7 +41,7 @@ const Success = () => {
 
           if (response?.payment_success === true) {
             setOrderData(response);
-            console.log(response)
+            console.log(response);
             clearCart();
           } else {
             navigate('/cart');
@@ -64,9 +66,55 @@ const Success = () => {
     );
   }
 
+  // Helper to recursively force supported colors
+  function forceSupportedColors(element, originalStyles = new Map()) {
+    if (!element) return;
+    // Save original styles
+    originalStyles.set(element, {
+      backgroundColor: element.style.backgroundColor,
+      color: element.style.color,
+    });
+    element.style.backgroundColor = '#fff';
+    element.style.color = '#000';
+    Array.from(element.children).forEach((child) =>
+      forceSupportedColors(child, originalStyles)
+    );
+  }
+
+  // Helper to restore original styles
+  function restoreOriginalColors(originalStyles) {
+    for (const [element, styles] of originalStyles.entries()) {
+      element.style.backgroundColor = styles.backgroundColor;
+      element.style.color = styles.color;
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    const input = document.getElementById('invoice-content');
+    if (!input) return;
+
+    // Recursively force supported colors and save originals
+    const originalStyles = new Map();
+    forceSupportedColors(input, originalStyles);
+
+    const canvas = await html2canvas(input, { scale: 2 });
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save('invoice.pdf');
+
+    // Restore original styles
+    restoreOriginalColors(originalStyles);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden">
+      <div
+        className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden"
+        id="invoice-content"
+      >
         <div className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white p-6">
           <h1 className="text-3xl font-bold mb-4">Order Invoice</h1>
           <p className="text-sm">Order ID: {sessionId}</p>
@@ -252,7 +300,7 @@ const Success = () => {
                 <span>View Order History</span>
               </button>
               <button
-                onClick={() => window.print()}
+                onClick={handleDownloadPDF}
                 className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center space-x-2"
               >
                 <svg
@@ -265,10 +313,10 @@ const Success = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                    d="M12 4v16m8-8H4"
                   />
                 </svg>
-                <span>Print Invoice</span>
+                <span>Download PDF</span>
               </button>
             </div>
           </div>

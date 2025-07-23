@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import ProfileLinks from './ProfileLinks';
 import Cart from './Cart';
 import userLogo from '../../../assets/userLogo.png'
+import Logo from '../Logo/Logo';
 
 const Navbar = () => {
   const { user } = useContext(AuthContext);
@@ -36,7 +37,7 @@ const Navbar = () => {
             <NavLinks />
           </ul>
         </div>
-        <a className="btn btn-ghost text-xl">daisyUI</a>
+        <Logo />
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">

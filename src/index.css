@@ -1,4 +1,12 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui" {
   themes: light;
+}
+/* PDF-friendly override for html2canvas */
+.pdf-friendly,
+.pdf-friendly * {
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: none !important;
+  filter: none !important;
 }

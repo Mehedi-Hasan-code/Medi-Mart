@@ -24,7 +24,7 @@ const Table = ({ setShowModal, medicinesArr }) => {
         <tbody>
           {/* row 1 */}
           {medicinesArr?.map((medicine, index) => (
-            <tr>
+            <tr key={medicine._id}>
               <th>
                 <label>{index + 1}</label>
               </th>
