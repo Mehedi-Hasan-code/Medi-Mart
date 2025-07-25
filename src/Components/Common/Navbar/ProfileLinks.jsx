@@ -15,7 +15,7 @@ const ProfileLinks = () => {
   return (
     <>
       <li>
-        <Link>Profile</Link>
+        <Link to='/profile'>Profile</Link>
       </li>
       <li>
         <Link to='/dashboard'>Dashboard</Link>

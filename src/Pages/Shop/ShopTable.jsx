@@ -45,7 +45,7 @@ const ShopTable = ({
           </tr>
         </thead>
         <tbody>
-          {paginatedMedicines.map((medicine, index) => (
+          {paginatedMedicines?.map((medicine, index) => (
             <tr key={medicine._id || index}>
               <th>
                 <label>{index + 1}</label>

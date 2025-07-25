@@ -6,6 +6,7 @@ import { AuthContext } from '../../Context/Auth/AuthContext';
 import { groupItemsBySeller } from '../../utils/groupItemsBySeller';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { toast } from 'react-toastify';
 
 const Success = () => {
   const { user, isUserLoading } = useContext(AuthContext);
@@ -16,6 +17,14 @@ const Success = () => {
   const [orderData, setOrderData] = useState(null);
 
   const sessionId = searchParams.get('session_id');
+
+  // Show toast and redirect if sessionId is missing
+  useEffect(() => {
+    if (!sessionId) {
+      toast.error('Wrong Session Id');
+      navigate('/cart');
+    }
+  }, [sessionId, navigate]);
 
   useEffect(() => {
     if (sessionId && !isUserLoading && user && user.email) {

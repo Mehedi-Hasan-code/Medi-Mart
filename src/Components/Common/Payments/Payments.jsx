@@ -11,8 +11,9 @@ const Payments = ({ payments, refetch }) => {
       <div className="text-center py-8 text-gray-500">No payments found.</div>
     );
   }
+  console.log(payments);
 
-  const handleAccept =  (transactionId) => {
+  const handleAccept = (transactionId) => {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -40,30 +41,51 @@ const Payments = ({ payments, refetch }) => {
   };
 
   return (
-    <div className="overflow-x-auto">
-      <table className="table">
+    <div className="overflow-x-auto bg-white/90 p-6 rounded-3xl shadow-lg border border-blue-100">
+      <table className="min-w-full rounded-xl overflow-hidden">
         <thead>
-          <tr>
-            <th>#</th>
-            <th>Buyer (Email)</th>
-            <th>Amount</th>
-            <th>Payment Method</th>
-            <th>Transaction ID</th>
-            <th>Status</th>
-            {role === 'admin' && <th>Action</th>}
+          <tr className="bg-blue-100 text-blue-900 text-sm font-bold border-b border-blue-100">
+            <th className="px-6 py-4 text-left">#</th>
+            <th className="px-6 py-4 text-left">Buyer (Email)</th>
+            <th className="px-6 py-4 text-left">Amount</th>
+            <th className="px-6 py-4 text-left">Payment Method</th>
+            <th className="px-6 py-4 text-left">Transaction ID</th>
+            <th className="px-6 py-4 text-left">Status</th>
+            {role === 'admin' && (
+              <th className="px-6 py-4 text-center">Action</th>
+            )}
           </tr>
         </thead>
         <tbody>
           {payments.map((payment, idx) => (
-            <tr key={payment._id || idx}>
-              <th>{idx + 1}</th>
-              <td>{payment.buyer || 'N/A'}</td>
-              <td>{payment.total_amount || 'N/A'}</td>
-              <td>{payment.payment_method || 'N/A'}</td>
-              <td>{payment.transactionId || 'N/A'}</td>
-              <td>{payment.status || 'N/A'}</td>
+            <tr
+              key={payment._id || idx}
+              className={
+                idx % 2 === 0
+                  ? 'bg-white hover:bg-blue-50 transition-colors'
+                  : 'bg-blue-50 hover:bg-blue-100 transition-colors'
+              }
+            >
+              <th className="px-6 py-3 font-semibold text-blue-900">
+                {idx + 1}
+              </th>
+              <td className="px-6 py-3 text-blue-900">
+                {payment.buyer || 'N/A'}
+              </td>
+              <td className="px-6 py-3 text-blue-900">
+                {payment.total_amount || 'N/A'}
+              </td>
+              <td className="px-6 py-3 text-blue-900">
+                {payment.payment_method || 'N/A'}
+              </td>
+              <td className="px-6 py-3 text-blue-900">
+                {payment.transactionId || 'N/A'}
+              </td>
+              <td className="px-6 py-3 text-blue-900">
+                {payment.status || 'N/A'}
+              </td>
               {role === 'admin' && (
-                <td className="text-center">
+                <td className="px-6 py-3 text-center">
                   {payment.status === 'paid' ? (
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
                       <svg

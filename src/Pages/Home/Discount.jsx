@@ -26,7 +26,7 @@ const Discount = () => {
   }
 
   if (error) {
-    return <LoadingError label="discounted medicines" showAction={true} />;
+    return <LoadingError label="discounted medicines" />;
   }
 
   if (!medicines || medicines.length === 0) {

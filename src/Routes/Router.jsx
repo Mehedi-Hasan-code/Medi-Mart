@@ -20,6 +20,10 @@ import PaymentHistory from '../Pages/Dashboard/Seller/PaymentHistory/PaymentHist
 import SalesReport from '../Pages/Dashboard/Admin/SalesReport/SalesReport';
 import AskForAdvertisement from '../Pages/Dashboard/Seller/AskForAdvertisement/AskForAdvertisement';
 import ManageAds from '../Pages/Dashboard/Admin/ManageAds/ManageAds';
+import AdminRoute from './AdminRoute';
+import SellerRoute from './SellerRoute';
+import PrivateRoute from './PrivateRoute';
+import Profile from '../Pages/Profile/Profile';
 
 export const router = createBrowserRouter([
   {
@@ -40,11 +44,23 @@ export const router = createBrowserRouter([
       },
       {
         path: 'cart',
-        element: <Cart />,
+        element: (
+          <PrivateRoute>
+            <Cart />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: 'profile',
+        element: <PrivateRoute><Profile /></PrivateRoute>
       },
       {
         path: 'canceled',
-        element: <Canceled />,
+        element: (
+          <PrivateRoute>
+            <Canceled />
+          </PrivateRoute>
+        ),
       },
       {
         path: 'sign-up',
@@ -62,7 +78,11 @@ export const router = createBrowserRouter([
   },
   {
     path: '/dashboard',
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
@@ -70,44 +90,84 @@ export const router = createBrowserRouter([
       },
       {
         path: 'manage-categories',
-        element: <ManageCategories />,
+        element: (
+          <AdminRoute>
+            <ManageCategories />
+          </AdminRoute>
+        ),
       },
       {
         path: 'manage-payments',
-        element: <ManagePayments />,
+        element: (
+          <AdminRoute>
+            <ManagePayments />
+          </AdminRoute>
+        ),
       },
       {
         path: 'manage-users',
-        element: <ManageUsers />,
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
       },
       {
         path: 'manage-medicine',
-        element: <ManageMedicine />,
+        element: (
+          <SellerRoute>
+            <ManageMedicine />
+          </SellerRoute>
+        ),
       },
       {
         path: 'manage-ads',
-        element: <ManageAds />
+        element: (
+          <AdminRoute>
+            <ManageAds />
+          </AdminRoute>
+        ),
       },
       {
         path: 'sales-report',
-        element: <SalesReport />
+        element: (
+          <AdminRoute>
+            <SalesReport />
+          </AdminRoute>
+        ),
       },
       {
         path: 'payment-history',
-        element: <PaymentHistory />,
+        element: (
+          <SellerRoute>
+            <PaymentHistory />
+          </SellerRoute>
+        ),
       },
       {
         path: 'ask-for-advertisement',
-        element: <AskForAdvertisement />
+        element: (
+          <SellerRoute>
+            <AskForAdvertisement />
+          </SellerRoute>
+        ),
       },
       {
         path: 'payments',
-        element: <MyPayments />,
+        element: (
+          <PrivateRoute>
+            <MyPayments />
+          </PrivateRoute>
+        ),
       },
     ],
   },
   {
     path: '/complete',
-    element: <InvoiceLayout />,
+    element: (
+      <PrivateRoute>
+        <InvoiceLayout />
+      </PrivateRoute>
+    ),
   },
 ]);
