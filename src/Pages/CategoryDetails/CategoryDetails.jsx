@@ -2,13 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-// import MedicinesTable from './MedicinesTable';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
-import ShopTable from '../Shop/ShopTable';
-import Slider from 'react-slick';
+
 import DataLoading from '../../Components/Loaders/DataLoading';
 import LoadingError from '../../Components/Common/States/LoadingError';
 import EmptyArray from '../../Components/Common/States/EmptyArray';
+import ShopTable from '../../Components/Common/States/Tables/ShopTable';
 
 const CategoryDetails = () => {
   const { publicApi } = useAxiosSecure();
@@ -70,39 +69,74 @@ const CategoryDetails = () => {
 
   return (
     <>
-      <h1>{category}</h1>
+      <section className="min-h-[80vh] py-12 bg-gradient-to-br from-blue-50 via-white to-emerald-50 rounded-xl my-10">
+        <div className="container mx-auto px-4 max-w-6xl">
+          {/* Header */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="flex flex-col sm:flex-row items-center gap-3 mb-2">
+              <span className="bg-gradient-to-r from-primary to-secondary p-3 rounded-full shadow-lg">
+                {/* You can use a relevant icon here if desired */}
+                <svg
+                  className="text-white w-7 h-7"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 4v16m8-8H4"
+                  ></path>
+                </svg>
+              </span>
+              <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 tracking-tight drop-shadow-sm text-center">
+                {category}
+              </h1>
+            </div>
+            <p className="text-lg text-gray-600 max-w-2xl text-center">
+              Browse, compare, and purchase medicines in the{' '}
+              <span className="font-semibold text-primary">{category}</span>{' '}
+              category. Find trusted options tailored to your needs.
+            </p>
+          </div>
 
-      {/* Loading state */}
-      {isLoading && <DataLoading label={`medicines in ${category}`} />}
+          {/* Loading state */}
+          {isLoading && <DataLoading label={`medicines in ${category}`} />}
 
-      {/* Error state */}
-      {error && (
-        <LoadingError label={`medicines in ${category}`} showAction={true} />
-      )}
+          {/* Error state */}
+          {error && (
+            <LoadingError
+              label={`medicines in ${category}`}
+              showAction={true}
+            />
+          )}
 
-      {/* Empty state */}
-      {!isLoading && !error && paginatedMedicines.length === 0 && (
-        <EmptyArray message={`No medicines found in ${category}`} />
-      )}
+          {/* Empty state */}
+          {!isLoading && !error && paginatedMedicines.length === 0 && (
+            <EmptyArray message={`No medicines found in ${category}`} />
+          )}
 
-      {/* Main content */}
-      {!isLoading && !error && paginatedMedicines.length > 0 && (
-        <ShopTable
-          paginatedMedicines={paginatedMedicines}
-          itemsPerPage={itemsPerPage}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          goToPage={goToPage}
-          handleItemsPerPageChange={handleItemsPerPageChange}
-          openModal={openModal}
+          {/* Main content */}
+          {!isLoading && !error && paginatedMedicines.length > 0 && (
+            <ShopTable
+              paginatedMedicines={paginatedMedicines}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              goToPage={goToPage}
+              handleItemsPerPageChange={handleItemsPerPageChange}
+              openModal={openModal}
+            />
+          )}
+        </div>
+        <DetailsModal
+          isOpen={isOpen}
+          close={closeModal}
+          medicine={selectedMedicine}
         />
-      )}
-
-      <DetailsModal
-        isOpen={isOpen}
-        close={closeModal}
-        medicine={selectedMedicine}
-      />
+      </section>
     </>
   );
 };

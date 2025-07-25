@@ -1,6 +1,6 @@
 import { Button } from '@headlessui/react';
 import React, { useContext } from 'react';
-import { CartContext } from '../../Context/Cart/CartContext';
+import { CartContext } from '../../../../Context/Cart/CartContext';
 
 const ShopTable = ({
   paginatedMedicines,
@@ -13,23 +13,7 @@ const ShopTable = ({
 }) => {
   const { addItem } = useContext(CartContext);
   return (
-    <div className="overflow-x-auto">
-      {/* Items per page selector */}
-      <div className="flex items-center mb-2">
-        <label className="mr-2 font-medium">Items per page:</label>
-        <select
-          className="select select-bordered select-sm w-24"
-          value={itemsPerPage}
-          onChange={handleItemsPerPageChange}
-        >
-          {[5, 10, 20, 50].map((num) => (
-            <option key={num} value={num}>
-              {num}
-            </option>
-          ))}
-        </select>
-      </div>
-
+    <div className="overflow-x-auto0">
       <table className="table">
         {/* head */}
         <thead>
@@ -80,7 +64,7 @@ const ShopTable = ({
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-blue-500"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -93,23 +77,28 @@ const ShopTable = ({
                     </svg>
                     Details
                   </Button>
-                  <button 
+                  <button
                     className="btn join-item flex items-center gap-2"
-                    onClick={() => addItem({
-                      id: medicine._id,
-                      name: medicine.itemName,
-                      price: medicine.price,
-                      discountedPrice: (Number(medicine.price) * (1 - (Number(medicine.discount) / 100))).toFixed(2),
-                      image: medicine.image,
-                      company: medicine.company,
-                      genericName: medicine.genericName,
-                      discount: medicine.discount,
-                      seller: medicine.seller,
-                    })}
+                    onClick={() =>
+                      addItem({
+                        id: medicine._id,
+                        name: medicine.itemName,
+                        price: medicine.price,
+                        discountedPrice: (
+                          Number(medicine.price) *
+                          (1 - Number(medicine.discount) / 100)
+                        ).toFixed(2),
+                        image: medicine.image,
+                        company: medicine.company,
+                        genericName: medicine.genericName,
+                        discount: medicine.discount,
+                        seller: medicine.seller,
+                      })
+                    }
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="w-4 h-4"
+                      className="w-4 h-4 text-green-500"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -130,7 +119,7 @@ const ShopTable = ({
         </tbody>
       </table>
       {/* Pagination Controls */}
-      <div className="flex justify-center mt-4 gap-2">
+      <div className="flex justify-center my-4 gap-2">
         <button
           className="btn btn-sm"
           onClick={() => goToPage(currentPage - 1)}
@@ -149,6 +138,15 @@ const ShopTable = ({
             {idx + 1}
           </button>
         ))}
+        <button className="btn btn-sm">
+          <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+            {[5, 10, 20, 50].map((num) => (
+              <option key={num} value={num}>
+                {num}
+              </option>
+            ))}
+          </select>
+        </button>
         <button
           className="btn btn-sm"
           onClick={() => goToPage(currentPage + 1)}

@@ -5,6 +5,7 @@ import DataLoading from '../../../../Components/Loaders/DataLoading';
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 import EmptyArray from '../../../../Components/Common/States/EmptyArray';
 import AdsTable from './AdsTable';
+import { Brain } from 'lucide-react';
 
 const ManageAds = () => {
   const { privateApi } = useAxiosSecure();
@@ -24,7 +25,9 @@ const ManageAds = () => {
   }, [adsData]);
 
   const handleStatusChange = (updatedAd) => {
-    setAds(prevAds => prevAds.map(ad => ad._id === updatedAd._id ? updatedAd : ad));
+    setAds((prevAds) =>
+      prevAds.map((ad) => (ad._id === updatedAd._id ? updatedAd : ad))
+    );
   };
 
   if (isLoading) {
@@ -40,8 +43,15 @@ const ManageAds = () => {
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Manage Advertisements</h2>
+    <div className="max-w-5xl mx-auto mt-8">
+      <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
+        <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-blue-200 to-green-200 shadow">
+          <Brain className="h-7 w-7 text-blue-600" />
+        </span>
+        <h2 className="text-3xl font-extrabold text-blue-800 tracking-tight text-center">
+          Manage Advertisements
+        </h2>
+      </div>
       <AdsTable ads={ads} onStatusChange={handleStatusChange} />
     </div>
   );

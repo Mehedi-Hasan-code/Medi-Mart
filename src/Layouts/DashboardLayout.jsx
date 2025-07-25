@@ -34,9 +34,9 @@ const DashboardLayout = () => {
                 </svg>
               </label>
             </div>
-            <div className='w-full flex justify-center'>
-      "       <Logo />
-          " </div>
+            <div className="w-full flex justify-center">
+              <Logo />
+            </div>
           </div>
           {/* Page content here */}
           <main className="flex-1 p-4 md:p-8">

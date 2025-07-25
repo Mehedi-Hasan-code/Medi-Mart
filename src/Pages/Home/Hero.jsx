@@ -34,10 +34,10 @@ const Hero = () => {
   }
 
   return (
-    <section className="relative min-h-[60vh] w-full">
+    <section className="relative min-h-[60vh] w-full rounded-xl overflow-hidden">
       <Swiper
         modules={[Autoplay, Pagination]}
-        autoplay={{ delay: 4000, disableOnInteraction: false }}
+        autoplay={{ delay: 2500, disableOnInteraction: false }}
         pagination={{ clickable: true }}
         loop={true}
         className="h-full"
