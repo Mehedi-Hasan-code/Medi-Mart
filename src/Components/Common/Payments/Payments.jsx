@@ -1,27 +1,61 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useUserRole from '../../../hooks/useUserRole';
 import Swal from 'sweetalert2';
 import useAxiosSecure from '../../../hooks/useAxiosSecure';
+import ListView from '../../Common/Payments/ListView';
+import GridView from '../../Common/Payments/GridView';
 
 const Payments = ({ payments, refetch }) => {
   const { privateApi } = useAxiosSecure();
   const { role } = useUserRole();
+  const [viewMode, setViewMode] = useState('list'); // Default to list view
+
   if (!Array.isArray(payments) || payments.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">No payments found.</div>
+      <div className="flex flex-col items-center justify-center py-16 px-6">
+        <div className="w-24 h-24 bg-gradient-to-br from-blue-100 to-indigo-100 rounded-full flex items-center justify-center mb-6">
+          <svg
+            className="w-12 h-12 text-blue-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+            />
+          </svg>
+        </div>
+        <h3 className="text-xl font-semibold text-gray-700 mb-2">
+          No Payments Found
+        </h3>
+        <p className="text-gray-500 text-center max-w-md">
+          There are no payment records available at the moment. Payments will
+          appear here once transactions are completed.
+        </p>
+      </div>
     );
   }
+
   console.log(payments);
 
   const handleAccept = (transactionId) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
+      title: 'Confirm Payment Acceptance',
+      text: 'Are you sure you want to accept this payment? This action cannot be undone.',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
+      confirmButtonColor: '#10B981',
+      cancelButtonColor: '#EF4444',
       confirmButtonText: 'Yes, Accept Payment',
+      cancelButtonText: 'Cancel',
+      customClass: {
+        popup: 'rounded-2xl',
+        confirmButton: 'rounded-lg',
+        cancelButton: 'rounded-lg',
+      },
     }).then(async (result) => {
       if (result.isConfirmed) {
         const res = await privateApi.patch(`/payments/${transactionId}`);
@@ -31,92 +65,200 @@ const Payments = ({ payments, refetch }) => {
             refetch();
           }
           Swal.fire({
-            title: 'Accepted!',
-            text: 'Payment has been accepted.',
+            title: 'Payment Accepted!',
+            text: 'The payment has been successfully accepted.',
             icon: 'success',
+            customClass: {
+              popup: 'rounded-2xl',
+            },
           });
         }
       }
     });
   };
 
+  const getStatusColor = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'paid':
+        return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+      case 'pending':
+        return 'bg-amber-100 text-amber-700 border-amber-200';
+      case 'failed':
+        return 'bg-red-100 text-red-700 border-red-200';
+      default:
+        return 'bg-gray-100 text-gray-700 border-gray-200';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'paid':
+        return (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        );
+      case 'pending':
+        return (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        );
+      case 'failed':
+        return (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        );
+      default:
+        return (
+          <svg
+            className="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+        );
+    }
+  };
+
+
+
+
   return (
-    <div className="overflow-x-auto bg-white/90 p-6 rounded-3xl shadow-lg border border-blue-100">
-      <table className="min-w-full rounded-xl overflow-hidden">
-        <thead>
-          <tr className="bg-blue-100 text-blue-900 text-sm font-bold border-b border-blue-100">
-            <th className="px-6 py-4 text-left">#</th>
-            <th className="px-6 py-4 text-left">Buyer (Email)</th>
-            <th className="px-6 py-4 text-left">Amount</th>
-            <th className="px-6 py-4 text-left">Payment Method</th>
-            <th className="px-6 py-4 text-left">Transaction ID</th>
-            <th className="px-6 py-4 text-left">Status</th>
-            {role === 'admin' && (
-              <th className="px-6 py-4 text-center">Action</th>
-            )}
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((payment, idx) => (
-            <tr
-              key={payment._id || idx}
-              className={
-                idx % 2 === 0
-                  ? 'bg-white hover:bg-blue-50 transition-colors'
-                  : 'bg-blue-50 hover:bg-blue-100 transition-colors'
-              }
-            >
-              <th className="px-6 py-3 font-semibold text-blue-900">
-                {idx + 1}
-              </th>
-              <td className="px-6 py-3 text-blue-900">
-                {payment.buyer || 'N/A'}
-              </td>
-              <td className="px-6 py-3 text-blue-900">
-                {payment.total_amount || 'N/A'}
-              </td>
-              <td className="px-6 py-3 text-blue-900">
-                {payment.payment_method || 'N/A'}
-              </td>
-              <td className="px-6 py-3 text-blue-900">
-                {payment.transactionId || 'N/A'}
-              </td>
-              <td className="px-6 py-3 text-blue-900">
-                {payment.status || 'N/A'}
-              </td>
-              {role === 'admin' && (
-                <td className="px-6 py-3 text-center">
-                  {payment.status === 'paid' ? (
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
-                      <svg
-                        className="w-3 h-3 mr-1 text-green-500"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                      Accepted
-                    </span>
-                  ) : (
-                    <button
-                      onClick={() => handleAccept(payment.transactionId)}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 border border-blue-200 hover:bg-blue-200 transition-colors"
-                    >
-                      Accept
-                    </button>
-                  )}
-                </td>
-              )}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className="space-y-6">
+      {/* Header with View Toggle */}
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+              <svg
+                className="w-6 h-6 text-white"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-800">
+                Payment Records
+              </h2>
+              <p className="text-gray-600">
+                Manage and track all payment transactions
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            {/* View Toggle */}
+            <div className="flex items-center bg-white rounded-xl p-1 shadow-sm border border-gray-200">
+              <button
+                onClick={() => setViewMode('list')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  viewMode === 'list'
+                    ? 'bg-blue-500 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6h16M4 10h16M4 14h16M4 18h16"
+                  />
+                </svg>
+                <span>List</span>
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  viewMode === 'grid'
+                    ? 'bg-blue-500 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+                  />
+                </svg>
+                <span>Grid</span>
+              </button>
+            </div>
+            {/* Payment Count */}
+            <div className="text-right">
+              <div className="text-3xl font-bold text-blue-600">
+                {payments.length}
+              </div>
+              <div className="text-sm text-gray-500">Total Payments</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Render the appropriate view */}
+      {viewMode === 'list' ? (
+        <ListView role={role} payments={payments} handleAccept={handleAccept} />
+      ) : (
+        <GridView payments = { payments } role = { role } handleAccept = { handleAccept } getStatusColor = { getStatusColor } getStatusIcon = { getStatusIcon } />
+      )}
     </div>
   );
 };

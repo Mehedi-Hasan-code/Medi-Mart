@@ -3,11 +3,12 @@ import useUserRole from '../../../hooks/useUserRole';
 import AdminDashboard from '../Admin/AdminDashboard/AdminDashboard';
 import UserDashboard from '../User/UserDashboard/UserDashboard';
 import SellerDashboard from '../Seller/SellerDashboard/SellerDashboard';
+import DataLoading from '../../../Components/Loaders/DataLoading';
 
 const DashboardRouteElement = () => {
   const { role, isLoading } = useUserRole();
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <DataLoading />;
 
   if (role === 'admin') return <AdminDashboard />;
   if (role === 'seller') return <SellerDashboard />;
