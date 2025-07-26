@@ -2,8 +2,9 @@ import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import Table from './Table';
-import DataLoading from '../../../../Components/Loaders/DataLoading';
+
 import Logo from '../../../../Components/Common/Logo/Logo';
+import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
 
 const ManageUsers = () => {
   const { privateApi } = useAxiosSecure();

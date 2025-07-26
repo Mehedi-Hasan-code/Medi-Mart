@@ -4,10 +4,12 @@ import { useLocation } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 
-import DataLoading from '../../Components/Loaders/DataLoading';
+
 import LoadingError from '../../Components/Common/States/LoadingError';
 import EmptyArray from '../../Components/Common/States/EmptyArray';
-import ShopTable from '../../Components/Common/States/Tables/ShopTable';
+
+import DataLoading from '../../Components/Common/Loaders/DataLoading';
+import ShopTable from '../../Components/Tables/ShopTable';
 
 const CategoryDetails = () => {
   const { publicApi } = useAxiosSecure();

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../Context/Auth/AuthContext";
-import DataLoading from "../Components/Loaders/DataLoading";
+import DataLoading from "../Components/Common/Loaders/DataLoading";
 
 const PrivateRoute = ({ children }) => {
   const {pathname} = useLocation()

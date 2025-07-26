@@ -2,9 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useContext } from 'react'
 import { AuthContext } from '../../../../Context/Auth/AuthContext'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
-import DataLoading from '../../../../Components/Loaders/DataLoading'
+
 import LoadingError from '../../../../Components/Common/States/LoadingError'
 import EmptyArray from '../../../../Components/Common/States/EmptyArray'
+import DataLoading from '../../../../Components/Common/Loaders/DataLoading'
 
 const SellerDashboard = () => {
   const { user } = useContext(AuthContext)

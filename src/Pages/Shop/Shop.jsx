@@ -3,10 +3,11 @@ import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 
 import LoadingError from '../../Components/Common/States/LoadingError';
-import DataLoading from '../../Components/Loaders/DataLoading';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
-import ShopTable from '../../Components/Common/States/Tables/ShopTable';
+
 import { HeartPulse } from 'lucide-react';
+import DataLoading from '../../Components/Common/Loaders/DataLoading';
+import ShopTable from '../../Components/Tables/ShopTable';
 
 const Shop = () => {
   const { publicApi } = useAxiosSecure();

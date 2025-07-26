@@ -3,7 +3,8 @@ import useUserRole from '../../../hooks/useUserRole';
 import AdminDashboard from '../Admin/AdminDashboard/AdminDashboard';
 import UserDashboard from '../User/UserDashboard/UserDashboard';
 import SellerDashboard from '../Seller/SellerDashboard/SellerDashboard';
-import DataLoading from '../../../Components/Loaders/DataLoading';
+import DataLoading from '../../../Components/Common/Loaders/DataLoading';
+
 
 const DashboardRouteElement = () => {
   const { role, isLoading } = useUserRole();

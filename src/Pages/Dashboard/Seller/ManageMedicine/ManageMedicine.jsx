@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 
 const ManageMedicine = () => {
   const { privateApi, publicApi } = useAxiosSecure();
-  const { user } = useContext(AuthContext);
+  const { user, isUserLoading } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
   const { register, handleSubmit, reset } = useForm();
   const [loading, setLoading] = useState(false);
@@ -24,13 +24,12 @@ const ManageMedicine = () => {
   // get medicine from db
   const { data, isPending, error, refetch } = useQuery({
     queryKey: ['medicines', user?.email],
-    enabled: !!user?.email,
+    enabled: !isUserLoading && !!user?.email,
     queryFn: async () =>
       privateApi.get(`/medicines/seller?email=${user?.email}`),
   });
   const medicinesArr = data?.medicines;
 
-  
   // add medicine to db
   const onSubmit = async (data) => {
     setLoading(true);
@@ -61,27 +60,30 @@ const ManageMedicine = () => {
   };
 
   return (
-    <div>
-      {/* Loading State */}
-      {isPending && (
-        <div className="flex justify-center items-center py-8">
-          <span className="loading loading-spinner loading-lg"></span>
-        </div>
-      )}
+    <div className="min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-700 tracking-tight text-center">
+          Manage Your Medicines
+        </h1>
 
-      {/* Error State */}
-      {error && (
-        <div className="text-center text-red-500 py-4">
-          Failed to load medicines. Please try again.
-        </div>
-      )}
-
-      {/* Table only renders if not loading and no error */}
-      {!isPending && !error && (
-        <Table setShowModal={setShowModal} medicinesArr={medicinesArr} />
-      )}
-
-      {/* DaisyUI Modal */}
+        {/* Loading State */}
+        {isPending && (
+          <div className="flex justify-center items-center py-8">
+            <span className="loading loading-spinner loading-lg text-blue-600"></span>
+          </div>
+        )}
+        {/* Error State */}
+        {error && (
+          <div className="text-center text-red-500 py-4 font-semibold">
+            Failed to load medicines. Please try again.
+          </div>
+        )}
+        {/* Table only renders if not loading and no error */}
+        {!isPending && !error && (
+          <Table setShowModal={setShowModal} medicinesArr={medicinesArr} />
+        )}
+      </div>
+      {/* Modal */}
       {showModal && (
         <Modal
           onSubmit={onSubmit}

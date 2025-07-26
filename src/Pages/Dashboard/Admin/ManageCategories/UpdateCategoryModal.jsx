@@ -1,16 +1,25 @@
 import { Button, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { uploadImage } from '../../../../utils/uploadImage';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
-import Loading from '../../../../Components/Common/Loaders/Loading'
+import Loading from '../../../../Components/Common/Loaders/Loading';
 import { toast } from 'react-toastify';
 
-const AddCategoryModal = ({ isOpen, close, refetch }) => {
+const UpdateCategoryModal = ({ isOpen, close, refetch, categoryData }) => {
   const { privateApi } = useAxiosSecure();
   const [categoryName, setCategoryName] = useState('');
   const [categoryImage, setCategoryImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+
+  // Set default values when categoryData changes
+  useEffect(() => {
+    if (categoryData) {
+      setCategoryName(categoryData.categoryName || '');
+      setImagePreview(categoryData.categoryImage || null);
+      setCategoryImage(null); // Reset file input
+    }
+  }, [categoryData]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -20,39 +29,49 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
       reader.onloadend = () => setImagePreview(reader.result);
       reader.readAsDataURL(file);
     } else {
-      setImagePreview(null);
+      setImagePreview(categoryData?.categoryImage || null);
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
+    setLoading(true);
     try {
-      const imgUrl = await uploadImage(categoryImage);
-      if (!imgUrl) {
-        toast.error('Failed to upload the image');
-        return;
+      let imgUrl = categoryData?.categoryImage; // Use existing image by default
+
+      // Only upload new image if a file was selected
+      if (categoryImage) {
+        imgUrl = await uploadImage(categoryImage);
+        if (!imgUrl) {
+          toast.error('Failed to upload the image');
+          return;
+        }
       }
-      const categoryData = {
-        categoryImage: imgUrl,
+
+      const updateData = {
         categoryName,
-        createdAt: new Date().toISOString()
+        categoryImage: imgUrl,
+        updatedAt: new Date().toISOString(),
       };
-      const response = await privateApi.post('/categories', categoryData);
+
+      const response = await privateApi.put(
+        `/categories/${categoryData._id}`,
+        updateData
+      );
       console.log(response);
       if (response.success === true) {
         refetch && refetch();
-        toast.success('Category added successfully');
+        toast.success('Category updated successfully');
         setCategoryName('');
         setCategoryImage(null);
         setImagePreview(null);
         close && close();
       }
     } catch (error) {
-      toast.error('Failed to add category');
+      toast.error('Failed to update category');
       console.log(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -76,10 +95,10 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
           >
             {/* Header icon and title */}
             <div className="flex flex-col items-center mb-6">
-              <div className="bg-blue-100 p-3 rounded-full shadow-md mb-2">
+              <div className="bg-emerald-100 p-3 rounded-full shadow-md mb-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-blue-600"
+                  className="h-8 w-8 text-emerald-600"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -88,18 +107,18 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M12 4v16m8-8H4"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
                   />
                 </svg>
               </div>
               <DialogTitle
                 as="h3"
-                className="text-2xl font-bold text-blue-700 tracking-tight mb-1 text-center"
+                className="text-2xl font-bold text-emerald-700 tracking-tight mb-1 text-center"
               >
-                Add New Category
+                Update Category
               </DialogTitle>
-              <p className="text-sm text-blue-500 text-center">
-                Fill in the details to add a new medicine category.
+              <p className="text-sm text-emerald-500 text-center">
+                Modify the details to update the category.
               </p>
             </div>
             <form
@@ -108,33 +127,32 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
               encType="multipart/form-data"
             >
               <div>
-                <label className="block text-blue-700 font-semibold mb-1">
+                <label className="block text-emerald-700 font-semibold mb-1">
                   Category Image
                 </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
-                  className="block w-full text-sm text-blue-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition-colors duration-150"
-                  required
+                  className="block w-full text-sm text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-emerald-100 file:text-emerald-700 hover:file:bg-emerald-200 transition-colors duration-150"
                 />
                 {imagePreview && (
                   <img
                     src={imagePreview}
                     alt="Preview"
-                    className="mt-3 h-28 w-full rounded-lg object-cover border border-blue-200 shadow-sm"
+                    className="mt-3 h-28 w-full rounded-lg object-cover border border-emerald-200 shadow-sm"
                   />
                 )}
               </div>
               <div>
-                <label className="block text-blue-700 font-semibold mb-1">
+                <label className="block text-emerald-700 font-semibold mb-1">
                   Category Name
                 </label>
                 <input
                   type="text"
                   value={categoryName}
                   onChange={(e) => setCategoryName(e.target.value)}
-                  className="w-full rounded-lg px-3 py-2 bg-blue-50 text-blue-900 border border-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400 placeholder-blue-400 transition-all"
+                  className="w-full rounded-lg px-3 py-2 bg-emerald-50 text-emerald-900 border border-emerald-200 focus:outline-none focus:ring-2 focus:ring-emerald-400 placeholder-emerald-400 transition-all"
                   placeholder="Enter category name"
                   required
                 />
@@ -142,18 +160,16 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
               <div className="flex gap-3 justify-end mt-4">
                 <Button
                   type="button"
-                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-blue-700 border border-blue-200 shadow-sm hover:bg-gray-200 hover:text-blue-900 transition-colors"
+                  className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-emerald-700 border border-emerald-200 shadow-sm hover:bg-gray-200 hover:text-emerald-900 transition-colors"
                   onClick={close}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 transition-colors"
+                  className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white shadow-md hover:bg-emerald-700 focus:ring-2 focus:ring-emerald-400 transition-colors"
                 >
-                  {
-                    loading ? <Loading /> : "Submit"
-                  }
+                  {loading ? <Loading /> : 'Update'}
                 </Button>
               </div>
             </form>
@@ -164,4 +180,4 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
   );
 };
 
-export default AddCategoryModal;
+export default UpdateCategoryModal;

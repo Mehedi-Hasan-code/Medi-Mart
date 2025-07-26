@@ -1,8 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AddCategoryModal from './AddCategoryModal';
+import UpdateCategoryModal from './UpdateCategoryModal';
+import useAxiosSecure from '../../../../hooks/useAxiosSecure';
+import Swal from 'sweetalert2';
 
-const CategoryTable = ({ categories }) => {
-  console.log(categories);
+const CategoryTable = ({ categories, refetch }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const openUpdateModal = (category) => {
+    setSelectedCategory(category);
+    setIsUpdateModalOpen(true);
+  };
+  const closeUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+    setSelectedCategory(null);
+  };
+  const { privateApi } = useAxiosSecure();
+
+  const handleDelete = (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await privateApi.delete(`/categories/${id}`);
+          console.log(response);
+          if (response.success === true) {
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your file has been deleted.',
+              icon: 'success',
+            });
+            refetch();
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    });
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="table">
@@ -30,7 +76,10 @@ const CategoryTable = ({ categories }) => {
               <td>
                 <div className="avatar">
                   <div className="mask mask-squircle h-12 w-12">
-                    <img src={category.categoryImage} />
+                    <img
+                      src={category.categoryImage}
+                      alt={category.categoryName}
+                    />
                   </div>
                 </div>
               </td>
@@ -39,10 +88,16 @@ const CategoryTable = ({ categories }) => {
               </td>
               <td className="px-4 py-3">
                 <div className="flex gap-2">
-                  <button className="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200 transition">
+                  <button
+                    onClick={() => openUpdateModal(category)}
+                    className="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold hover:bg-blue-200 transition"
+                  >
                     Edit
                   </button>
-                  <button className="px-3 py-1 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 transition">
+                  <button
+                    onClick={() => handleDelete(category._id)}
+                    className="px-3 py-1 rounded-lg bg-red-100 text-red-700 font-semibold hover:bg-red-200 transition"
+                  >
                     Delete
                   </button>
                 </div>
@@ -53,9 +108,7 @@ const CategoryTable = ({ categories }) => {
             <td colSpan={4} className="text-center py-4">
               <button
                 className="px-5 py-2 rounded-lg bg-gradient-to-r from-emerald-500 to-blue-500 text-white font-bold shadow hover:from-emerald-600 hover:to-blue-600 transition"
-                onClick={() =>
-                  document.getElementById('my_modal_5').showModal()
-                }
+                onClick={openModal}
               >
                 + Add Category
               </button>
@@ -63,7 +116,17 @@ const CategoryTable = ({ categories }) => {
           </tr>
         </tbody>
       </table>
-      <AddCategoryModal />
+      <AddCategoryModal
+        isOpen={isModalOpen}
+        close={closeModal}
+        refetch={refetch}
+      />
+      <UpdateCategoryModal
+        isOpen={isUpdateModalOpen}
+        close={closeUpdateModal}
+        refetch={refetch}
+        categoryData={selectedCategory}
+      />
     </div>
   );
 };

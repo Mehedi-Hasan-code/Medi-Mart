@@ -2,9 +2,10 @@ import React, { useContext } from 'react';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { AuthContext } from '../../../../Context/Auth/AuthContext';
 import { useQuery } from '@tanstack/react-query';
-import DataLoading from '../../../../Components/Loaders/DataLoading';
+
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 import EmptyArray from '../../../../Components/Common/States/EmptyArray';
+import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
 
 const UserDashboard = () => {
   const { user, isUserLoading } = useContext(AuthContext);
@@ -34,11 +35,7 @@ const UserDashboard = () => {
   }
 
   // Assuming the API returns an array with a single summary object
-  const {
-    paidAmount = 0,
-    pendingAmount = 0,
-    totalOrders = 0,
-  } = data[0] || {};
+  const { paidAmount = 0, pendingAmount = 0, totalOrders = 0 } = data[0] || {};
 
   return (
     <div className="p-6">

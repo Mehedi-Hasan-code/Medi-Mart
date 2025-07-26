@@ -1,22 +1,24 @@
-import React, { useContext } from 'react'
+import React, { useContext } from 'react';
 import { AuthContext } from '../Context/Auth/AuthContext';
 import useUserRole from '../hooks/useUserRole';
-import Loading from '../Components/Loaders/Loading';
 import { Navigate } from 'react-router-dom';
+import DataLoading from '../Components/Common/Loaders/DataLoading';
 
-const RiderRoute = ({children}) => {
-  const { user, isUserLoading } = useContext(AuthContext)
-  const { role, roleLoading } = useUserRole();
+const SellerRoute = ({ children }) => {
+  const { user, isUserLoading } = useContext(AuthContext);
+  const { role, isLoading: roleLoading } = useUserRole();
 
+  // Show loading while either user or role is loading
   if (isUserLoading || roleLoading) {
-    return <Loading />;
+    return <DataLoading />;
   }
 
-  if (!user || role !== 'seller') {
+  // Only redirect if user exists but role is not seller, or if no user
+  if (!user || (role && role !== 'seller')) {
     return <Navigate to="/forbidden" />;
   }
 
   return children;
 };
 
-export default RiderRoute
+export default SellerRoute;

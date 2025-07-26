@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import useUserRole from '../hooks/useUserRole';
 import { Navigate } from 'react-router';
 import { AuthContext } from '../Context/Auth/AuthContext';
-import DataLoading from '../Components/Loaders/DataLoading';
+import DataLoading from '../Components/Common/Loaders/DataLoading';
 
 const AdminRoute = ({ children }) => {
   const { user, isUserLoading } = useContext(AuthContext)

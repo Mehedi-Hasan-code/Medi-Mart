@@ -2,7 +2,7 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
-import DataLoading from '../../Components/Loaders/DataLoading';
+import DataLoading from '../../Components/Common/Loaders/DataLoading';
 import LoadingError from '../../Components/Common/States/LoadingError';
 
 const Categories = () => {

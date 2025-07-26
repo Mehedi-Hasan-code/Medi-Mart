@@ -2,7 +2,7 @@ import React from 'react';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import { useQuery } from '@tanstack/react-query';
 import CategoryTable from './CategoryTable';
-import DataLoading from '../../../../Components/Loaders/DataLoading';
+import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 
 const ManageCategories = () => {
@@ -12,6 +12,7 @@ const ManageCategories = () => {
     data: categories,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ['categories'],
     queryFn: () => publicApi.get('/categories'),
@@ -52,7 +53,7 @@ const ManageCategories = () => {
             inventory.
           </p>
         </div>
-        <CategoryTable categories={categories} />
+        <CategoryTable categories={categories} refetch={refetch} />
       </div>
     </section>
   );

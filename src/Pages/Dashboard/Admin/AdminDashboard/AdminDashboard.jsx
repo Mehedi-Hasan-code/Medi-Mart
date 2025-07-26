@@ -1,9 +1,10 @@
 import React from 'react'
 import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import { useQuery } from '@tanstack/react-query'
-import DataLoading from '../../../../Components/Loaders/DataLoading'
+
 import LoadingError from '../../../../Components/Common/States/LoadingError'
 import EmptyArray from '../../../../Components/Common/States/EmptyArray'
+import DataLoading from '../../../../Components/Common/Loaders/DataLoading'
 
 const AdminDashboard = () => {
   const { privateApi } = useAxiosSecure()

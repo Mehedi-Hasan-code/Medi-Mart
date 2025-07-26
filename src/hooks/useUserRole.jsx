@@ -7,7 +7,7 @@ const useUserRole = () => {
   const { privateApi } = useAxiosSecure();
 
   const {
-    data: role = 'user',
+    data: role,
     isLoading,
     refetch,
   } = useQuery({
@@ -18,7 +18,11 @@ const useUserRole = () => {
       return res?.role || 'user';
     },
   });
-  return { role, isLoading, refetch };
+
+  // Return default role only when not loading and user exists
+  const finalRole =
+    !isLoading && !isUserLoading && user ? role || 'user' : null;
+  return { role: finalRole, isLoading, refetch };
 };
 
 export default useUserRole;

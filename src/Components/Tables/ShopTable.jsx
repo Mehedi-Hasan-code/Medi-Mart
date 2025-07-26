@@ -1,6 +1,6 @@
 import { Button } from '@headlessui/react';
 import React, { useContext } from 'react';
-import { CartContext } from '../../../../Context/Cart/CartContext';
+import { CartContext } from '../../Context/Cart/CartContext';
 
 const ShopTable = ({
   paginatedMedicines,
