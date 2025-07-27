@@ -6,8 +6,11 @@ import useAxiosSecure from '../../../../hooks/useAxiosSecure'
 import LoadingError from '../../../../Components/Common/States/LoadingError'
 import EmptyArray from '../../../../Components/Common/States/EmptyArray'
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading'
+import { useLocation } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 const SellerDashboard = () => {
+  const location = useLocation()
   const { user } = useContext(AuthContext)
   const { privateApi } = useAxiosSecure()
 
@@ -31,6 +34,9 @@ const SellerDashboard = () => {
 
   return (
     <div className="p-4 md:p-8">
+      <Helmet key={location.pathname}>
+        <title>Seller Dashboard</title>
+      </Helmet>
       <h2 className="text-2xl md:text-3xl font-bold mb-6 text-primary">Seller Dashboard</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Total Orders */}

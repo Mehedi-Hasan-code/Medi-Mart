@@ -5,8 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ManagePayments = () => {
+  const location = useLocation()
   const { privateApi } = useAxiosSecure();
 
   const { data, isLoading, error, refetch } = useQuery({
@@ -24,6 +27,9 @@ const ManagePayments = () => {
 
   return (
     <div>
+      <Helmet key={location.pathname}>
+        <title>Manage Payments</title>
+      </Helmet>
       <Payments payments={data || []} refetch={refetch} />
     </div>
   );

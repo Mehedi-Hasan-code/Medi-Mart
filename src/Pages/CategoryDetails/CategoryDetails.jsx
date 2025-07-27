@@ -4,12 +4,12 @@ import { useLocation } from 'react-router-dom';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 
-
 import LoadingError from '../../Components/Common/States/LoadingError';
 import EmptyArray from '../../Components/Common/States/EmptyArray';
 
 import DataLoading from '../../Components/Common/Loaders/DataLoading';
 import ShopTable from '../../Components/Tables/ShopTable';
+import { Helmet } from 'react-helmet-async';
 
 const CategoryDetails = () => {
   const { publicApi } = useAxiosSecure();
@@ -72,6 +72,9 @@ const CategoryDetails = () => {
   return (
     <>
       <section className="min-h-[80vh] py-12 bg-gradient-to-br from-blue-50 via-white to-emerald-50 rounded-xl my-10">
+        <Helmet key={location.pathname}>
+          <title>Category Details - {category}</title>
+        </Helmet>
         <div className="container mx-auto px-4 max-w-6xl">
           {/* Header */}
           <div className="flex flex-col items-center mb-10">

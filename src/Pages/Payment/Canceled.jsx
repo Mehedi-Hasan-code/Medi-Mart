@@ -1,10 +1,15 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+// eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react"
 
 const Canceled = () => {
+  const location = useLocation()
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <Helmet key={location.pathname}>
+        <title>Payment Canceled</title>
+      </Helmet>
       <motion.div 
         animate={{ opacity: 1, scale: 1 }}
         initial={{ opacity: 0, scale: 0.9 }}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { CartContext } from '../../Context/Cart/CartContext';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { AuthContext } from '../../Context/Auth/AuthContext';
@@ -9,6 +9,7 @@ import html2canvas from 'html2canvas';
 import { toast } from 'react-toastify';
 
 const Success = () => {
+  const location = useLocation()
   const { user, isUserLoading } = useContext(AuthContext);
   const { items, discountedTotal, clearCart } = useContext(CartContext);
   const [searchParams] = useSearchParams();
@@ -67,6 +68,9 @@ const Success = () => {
   if (!orderData) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <Helmet key={location.pathname}>
+        <title>Medi Mart</title>
+      </Helmet>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading your invoice...</p>
@@ -120,6 +124,9 @@ const Success = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <Helmet key={location.pathname}>
+        <title>Payment Successful</title>
+      </Helmet>
       <div
         className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl overflow-hidden"
         id="invoice-content"

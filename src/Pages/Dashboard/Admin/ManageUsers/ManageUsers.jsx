@@ -5,9 +5,12 @@ import Table from './Table';
 
 import Logo from '../../../../Components/Common/Logo/Logo';
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ManageUsers = () => {
   const { privateApi } = useAxiosSecure();
+  const location = useLocation();
 
   const {
     data: users,
@@ -28,6 +31,9 @@ const ManageUsers = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 py-10 px-2 md:px-8">
+      <Helmet key={location.pathname}>
+        <title>Manage Users</title>
+      </Helmet>
       <div className="max-w-5xl mx-auto">
         <div className="flex flex-col items-center mb-8">
           <Logo />

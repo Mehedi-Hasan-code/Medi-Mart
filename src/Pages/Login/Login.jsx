@@ -1,13 +1,15 @@
 import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 
 import { getAdditionalUserInfo } from 'firebase/auth';
 import useAxiosSecure from '../../hooks/useAxiosSecure';
 import { toast } from 'react-toastify';
 import Loading from '../../Components/Common/Loaders/Loading';
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
+  const location = useLocation();
   const { signInWithGoogle, signInByEmailAndPassword } =
     useContext(AuthContext);
   const navigate = useNavigate();
@@ -66,6 +68,9 @@ const Login = () => {
   };
   return (
     <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
+      <Helmet key={location.pathname}>
+        <title>Login</title>
+      </Helmet>
       <h1 className="text-2xl font-bold text-center">Login</h1>
       <form
         onSubmit={handleSignInWithEmailAndPassword}

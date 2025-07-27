@@ -2,8 +2,11 @@ import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import TanstackTable from './TanstackTable';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const SalesReport = () => {
+  const location = useLocation();
   const { privateApi } = useAxiosSecure();
 
   const { data } = useQuery({
@@ -14,6 +17,9 @@ const SalesReport = () => {
   console.log(data);
   return (
     <>
+      <Helmet key={location.pathname}>
+        <title>Sales Report</title>
+      </Helmet>
       <TanstackTable data={data} />
     </>
   );

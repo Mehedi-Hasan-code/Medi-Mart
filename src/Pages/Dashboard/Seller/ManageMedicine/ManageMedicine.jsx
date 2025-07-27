@@ -7,8 +7,11 @@ import { AuthContext } from '../../../../Context/Auth/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import Modal from './Modal';
 import { useForm } from 'react-hook-form';
+import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 
 const ManageMedicine = () => {
+  const location = useLocation()
   const { privateApi, publicApi } = useAxiosSecure();
   const { user, isUserLoading } = useContext(AuthContext);
   const [showModal, setShowModal] = useState(false);
@@ -61,6 +64,9 @@ const ManageMedicine = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet key={location.pathname}>
+        <title>Manage Medicines</title>
+      </Helmet>
       <div className="max-w-6xl mx-auto">
         <h1 className="text-2xl md:text-3xl font-bold text-blue-700 tracking-tight text-center">
           Manage Your Medicines

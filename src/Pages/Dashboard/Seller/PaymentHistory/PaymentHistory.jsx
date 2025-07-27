@@ -7,8 +7,11 @@ import Table from './Table';
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 import EmptyArray from '../../../../Components/Common/States/EmptyArray';
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
+import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 
 const PaymentHistory = () => {
+  const location = useLocation()
   const { privateApi } = useAxiosSecure();
   const { user, isUserLoading } = useContext(AuthContext);
 
@@ -38,6 +41,9 @@ const PaymentHistory = () => {
 
   return (
     <section className="max-w-4xl mx-auto">
+      <Helmet key={location.pathname}>
+        <title>Payment History</title>
+      </Helmet>
       <div className="mb-8 flex flex-col sm:flex-row items-center gap-3">
         <div className="bg-gradient-to-tr from-green-400 to-blue-400 rounded-full p-2 shadow-md">
           <svg

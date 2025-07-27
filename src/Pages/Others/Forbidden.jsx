@@ -1,9 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const Forbidden = () => {
+  const location = useLocation()
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center bg-gray-100 text-gray-800 p-8">
+      <Helmet key={location.pathname}>
+        <title>Forbidden Access</title>
+      </Helmet>
       <h1 className="text-7xl font-extrabold m-0">403</h1>
       <h2 className="mt-4 mb-2 text-2xl font-semibold">Forbidden</h2>
       <p className="mb-8 max-w-md text-center text-base">

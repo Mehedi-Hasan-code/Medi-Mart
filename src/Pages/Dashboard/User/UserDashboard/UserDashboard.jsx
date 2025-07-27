@@ -6,8 +6,11 @@ import { useQuery } from '@tanstack/react-query';
 import LoadingError from '../../../../Components/Common/States/LoadingError';
 import EmptyArray from '../../../../Components/Common/States/EmptyArray';
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const UserDashboard = () => {
+  const location = useLocation()
   const { user, isUserLoading } = useContext(AuthContext);
   const { privateApi } = useAxiosSecure();
 
@@ -39,6 +42,9 @@ const UserDashboard = () => {
 
   return (
     <div className="p-6">
+      <Helmet key={location.pathname}>
+        <title>User Dashboard</title>
+      </Helmet>
       <h2 className="text-2xl font-bold mb-6 text-primary">User Dashboard</h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-white rounded-xl shadow p-6 flex flex-col items-center border-t-4 border-green-400">

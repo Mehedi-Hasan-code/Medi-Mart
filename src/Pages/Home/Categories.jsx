@@ -39,7 +39,7 @@ const Categories = () => {
               <span className="text-2xl">🏥</span>
             </div>
             <h2 className="text-4xl font-bold text-gray-800">
-            Medicine Categories
+              Medicine Categories
             </h2>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">

@@ -4,8 +4,11 @@ import { useQuery } from '@tanstack/react-query';
 import CategoryTable from './CategoryTable';
 import DataLoading from '../../../../Components/Common/Loaders/DataLoading';
 import LoadingError from '../../../../Components/Common/States/LoadingError';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ManageCategories = () => {
+  const location = useLocation();
   const { publicApi } = useAxiosSecure();
 
   const {
@@ -24,6 +27,9 @@ const ManageCategories = () => {
 
   return (
     <section className="min-h-[70vh] py-10 bg-gradient-to-br from-blue-50 via-white to-emerald-50 rounded-xl my-8 shadow-md">
+      <Helmet key={location.pathname}>
+        <title>Manage Categories</title>
+      </Helmet>
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex flex-col items-center mb-8">
           <div className="flex flex-col sm:flex-row items-center gap-3 mb-2">

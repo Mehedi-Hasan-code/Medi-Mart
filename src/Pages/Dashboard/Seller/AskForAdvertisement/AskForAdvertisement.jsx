@@ -8,8 +8,11 @@ import LoadingError from '../../../../Components/Common/States/LoadingError';
 import Modal from './Modal';
 import { Button } from '@headlessui/react';
 import Table from './Table';
+import { Helmet } from 'react-helmet-async';
+import { useLocation } from 'react-router-dom';
 
 const AskForAdvertisement = () => {
+  const location = useLocation();
   const { user, isUserLoading } = useContext(AuthContext);
   const { privateApi } = useAxiosSecure();
 
@@ -42,6 +45,9 @@ const AskForAdvertisement = () => {
 
   return (
     <div className="min-h-[80vh] bg-gradient-to-br from-cyan-50 via-white to-green-50">
+      <Helmet key={location.pathname}>
+        <title>Ask For Advertisement</title>
+      </Helmet>
       {/* Header */}
       <div className="max-w-3xl mx-auto mb-8 flex flex-col items-center text-center">
         <div className="bg-cyan-100 rounded-full shadow mb-3">

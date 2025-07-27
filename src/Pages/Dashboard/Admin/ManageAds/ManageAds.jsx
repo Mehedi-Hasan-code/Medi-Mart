@@ -6,8 +6,11 @@ import LoadingError from '../../../../Components/Common/States/LoadingError';
 import EmptyArray from '../../../../Components/Common/States/EmptyArray';
 import AdsTable from './AdsTable';
 import { Brain } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const ManageAds = () => {
+  const location = useLocation;
   const { privateApi } = useAxiosSecure();
   const {
     data: adsData = [],
@@ -44,6 +47,9 @@ const ManageAds = () => {
 
   return (
     <div className="max-w-5xl mx-auto mt-8">
+      <Helmet key={location.pathname}>
+        <title>Manage Ads</title>
+      </Helmet>
       <div className="flex flex-col sm:flex-row items-center gap-3 mb-6">
         <span className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-gradient-to-tr from-blue-200 to-green-200 shadow">
           <Brain className="h-7 w-7 text-blue-600" />

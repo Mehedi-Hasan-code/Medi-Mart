@@ -5,6 +5,7 @@ import useAxiosSecure from '../../../../hooks/useAxiosSecure';
 import Loading from '../../../../Components/Common/Loaders/Loading';
 import { toast } from 'react-toastify';
 
+
 const UpdateCategoryModal = ({ isOpen, close, refetch, categoryData }) => {
   const { privateApi } = useAxiosSecure();
   const [categoryName, setCategoryName] = useState('');
@@ -82,6 +83,7 @@ const UpdateCategoryModal = ({ isOpen, close, refetch, categoryData }) => {
       className="relative z-20 focus:outline-none"
       onClose={close}
     >
+
       {/* Overlay */}
       <div
         className="fixed inset-0 bg-gradient-to-br from-blue-100/80 via-white/80 to-emerald-100/80 backdrop-blur-sm"

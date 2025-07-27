@@ -2,12 +2,17 @@ import React, { useContext } from 'react';
 import { AuthContext } from '../../Context/Auth/AuthContext';
 import userLogo from '../../assets/userLogo.png';
 import { User, Mail, ShieldCheck, ShieldX } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 
 const Profile = () => {
+  const location = useLocation()
   const { user } = useContext(AuthContext);
 
   return (
     <div className="flex justify-center items-center min-h-[60vh] bg-gradient-to-br from-blue-50 to-indigo-50 py-10">
+      <Helmet key={location.pathname}>
+        <title>Your Profile</title>
+      </Helmet>
       <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full flex flex-col items-center border border-blue-100">
         <div className="relative mb-6">
           <img
