@@ -2,6 +2,7 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 // eslint-disable-next-line no-unused-vars
 import { motion } from "motion/react"
+import { Helmet } from 'react-helmet-async';
 
 const Canceled = () => {
   const location = useLocation()

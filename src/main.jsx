@@ -12,7 +12,7 @@ import { HelmetProvider } from 'react-helmet-async';
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')).render(
-
+  <StrictMode>
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
@@ -23,5 +23,5 @@ createRoot(document.getElementById('root')).render(
         </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
-
+  </StrictMode>
 );

@@ -127,17 +127,63 @@ const ShopTable = ({
         >
           Prev
         </button>
-        {[...Array(totalPages)].map((_, idx) => (
-          <button
-            key={idx + 1}
-            className={`btn btn-sm ${
-              currentPage === idx + 1 ? 'btn-active' : ''
-            }`}
-            onClick={() => goToPage(idx + 1)}
-          >
-            {idx + 1}
-          </button>
-        ))}
+        {/* Pagination Buttons with Ellipsis */}
+        {totalPages <= 5 ? (
+          [...Array(totalPages)].map((_, idx) => (
+            <button
+              key={idx + 1}
+              className={`btn btn-sm ${
+                currentPage === idx + 1 ? 'btn-active' : ''
+              }`}
+              onClick={() => goToPage(idx + 1)}
+            >
+              {idx + 1}
+            </button>
+          ))
+        ) : (
+          <>
+            {/* First page */}
+            <button
+              className={`btn btn-sm ${currentPage === 1 ? 'btn-active' : ''}`}
+              onClick={() => goToPage(1)}
+            >
+              1
+            </button>
+            {/* Left Ellipsis */}
+            {currentPage > 3 && <span className="px-2">...</span>}
+            {/* Pages around current */}
+            {Array.from({ length: 5 }, (_, i) => currentPage - 2 + i)
+              .filter(
+                (pageNum) =>
+                  pageNum > 1 &&
+                  pageNum < totalPages &&
+                  pageNum >= currentPage - 2 &&
+                  pageNum <= currentPage + 2
+              )
+              .map((pageNum) => (
+                <button
+                  key={pageNum}
+                  className={`btn btn-sm ${
+                    currentPage === pageNum ? 'btn-active' : ''
+                  }`}
+                  onClick={() => goToPage(pageNum)}
+                >
+                  {pageNum}
+                </button>
+              ))}
+            {/* Right Ellipsis */}
+            {currentPage < totalPages - 2 && <span className="px-2">...</span>}
+            {/* Last page */}
+            <button
+              className={`btn btn-sm ${
+                currentPage === totalPages ? 'btn-active' : ''
+              }`}
+              onClick={() => goToPage(totalPages)}
+            >
+              {totalPages}
+            </button>
+          </>
+        )}
         <button className="btn btn-sm">
           <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
             {[5, 10, 20, 50].map((num) => (

@@ -99,7 +99,7 @@ const SignUp = () => {
         await publicApi.post('/users', userInfo);
       }
       // success actions
-      navigate('/');
+      navigate(location.state || '/')
       toast.success('Login successful');
     } catch (error) {
       console.log(error);
@@ -108,11 +108,11 @@ const SignUp = () => {
   };
 
   return (
-    <>
+    <div className='flex justify-center'>
       <Helmet key={location.pathname}>
         <title>Sign Up</title>
       </Helmet>
-      <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800">
+      <div className="w-full max-w-md p-8 space-y-3 rounded-xl dark:bg-gray-50 dark:text-gray-800 border border-gray-300 my-6">
         <h1 className="text-2xl font-bold text-center">Sign Up</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* User name */}
@@ -235,7 +235,7 @@ const SignUp = () => {
           </Link>
         </p>
       </div>
-    </>
+    </div>
   );
 };
 

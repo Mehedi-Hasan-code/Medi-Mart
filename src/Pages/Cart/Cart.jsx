@@ -90,9 +90,7 @@ const Cart = () => {
                 >
                   <div className="flex items-center gap-4 w-full sm:w-auto">
                     <div className="w-20 h-20 bg-gradient-to-tr from-blue-200 to-blue-100 rounded-lg  flex items-center justify-center text-blue-400 text-4xl mr-2 shadow-inner">
-                      <span role="img" aria-label="medicine">
-                        💊
-                      </span>
+                      <img className='rounded-xl w-full h-full object-cover' src={item.image} alt="medicine image" />
                     </div>
                     <div>
                       <h3 className="font-bold text-blue-900 text-lg">

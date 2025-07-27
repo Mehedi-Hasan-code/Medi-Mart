@@ -24,6 +24,7 @@ import AdminRoute from './AdminRoute';
 import SellerRoute from './SellerRoute';
 import PrivateRoute from './PrivateRoute';
 import Profile from '../Pages/Profile/Profile';
+import NotFound from '../Components/Common/States/NotFound'
 
 export const router = createBrowserRouter([
   {
@@ -52,7 +53,11 @@ export const router = createBrowserRouter([
       },
       {
         path: 'profile',
-        element: <PrivateRoute><Profile /></PrivateRoute>
+        element: (
+          <PrivateRoute>
+            <Profile />
+          </PrivateRoute>
+        ),
       },
       {
         path: 'canceled',
@@ -169,5 +174,10 @@ export const router = createBrowserRouter([
         <InvoiceLayout />
       </PrivateRoute>
     ),
+  },
+  // Add this catch-all route for 404
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
