@@ -122,6 +122,17 @@ src/
 
 ---
 
+## 🧪 Test Accounts
+
+You can use the following test accounts to log in as an Admin or Seller:
+
+| Role   | Email            | Password |
+| ------ | ---------------- | -------- |
+| Admin  | admin@gmail.com  | 123456   |
+| Seller | seller@gmail.com | 123456   |
+
+---
+
 ## 🤝 Contributing
 
 1. Fork the repository
