@@ -39,7 +39,6 @@ const AddCategoryModal = ({ isOpen, close, refetch }) => {
         createdAt: new Date().toISOString()
       };
       const response = await privateApi.post('/categories', categoryData);
-      console.log(response);
       if (response.success === true) {
         refetch && refetch();
         toast.success('Category added successfully');

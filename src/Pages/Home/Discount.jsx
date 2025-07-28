@@ -19,7 +19,7 @@ const Discount = () => {
   });
 
   const medicines = data?.medicines;
-  console.log(medicines);
+
 
   if (isLoading) {
     return <DataLoading label="discounted medicines" />;

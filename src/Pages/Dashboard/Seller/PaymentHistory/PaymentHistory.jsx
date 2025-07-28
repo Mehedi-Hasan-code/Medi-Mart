@@ -25,7 +25,7 @@ const PaymentHistory = () => {
     retry: 1,
     retryDelay: 1000,
   });
-  console.log(data);
+
 
   if (isLoading || isUserLoading)
     return <DataLoading label="payment history" />;

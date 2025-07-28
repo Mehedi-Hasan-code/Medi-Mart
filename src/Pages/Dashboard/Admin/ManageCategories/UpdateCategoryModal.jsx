@@ -59,7 +59,6 @@ const UpdateCategoryModal = ({ isOpen, close, refetch, categoryData }) => {
         `/categories/${categoryData._id}`,
         updateData
       );
-      console.log(response);
       if (response.success === true) {
         refetch && refetch();
         toast.success('Category updated successfully');

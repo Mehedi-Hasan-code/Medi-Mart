@@ -28,10 +28,8 @@ const Cart = () => {
         throw new Error('Please log in to proceed with checkout');
       }
       const sellersGroup = groupItemsBySeller(items);
-      console.log(sellersGroup);
 
       const response = await privateApi.post('/checkout', sellersGroup);
-      console.log('Checkout response:', response);
 
       if (response) {
         window.location.href = response;

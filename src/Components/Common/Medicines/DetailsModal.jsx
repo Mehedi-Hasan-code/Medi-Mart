@@ -12,7 +12,6 @@ import {
 
 const DetailsModal = ({ isOpen, close, medicine }) => {
   if (!isOpen) return null;
-  console.log(medicine);
 
   // Calculate discounted price
   const price = Number(medicine?.price);

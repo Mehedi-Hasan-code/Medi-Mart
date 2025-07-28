@@ -13,7 +13,7 @@ const useAxiosSecure = () => {
 
   publicApi.interceptors.response.use(
     (res) => {
-      console.log('axios res :', res.data);
+      // console.log('axios res :', res.data);
       return res.data;
     },
     (err) => console.log(err)
@@ -48,7 +48,7 @@ const useAxiosSecure = () => {
 
   privateApi.interceptors.response.use(
     (res) => {
-      console.log('axios res :', res.data);
+      // console.log('axios res :', res.data);
       return res.data;
     },
     (error) => {

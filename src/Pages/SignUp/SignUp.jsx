@@ -86,7 +86,6 @@ const SignUp = () => {
       const additionalInfo = getAdditionalUserInfo(userCredential);
       if (additionalInfo?.isNewUser) {
         // get user info
-        console.log(additionalInfo);
         const userInfo = {
           name: additionalInfo.profile.name,
           email: additionalInfo.profile.email,
@@ -102,7 +101,6 @@ const SignUp = () => {
       navigate(location.state || '/')
       toast.success('Login successful');
     } catch (error) {
-      console.log(error);
       setErrorMessage(error.message);
     }
   };

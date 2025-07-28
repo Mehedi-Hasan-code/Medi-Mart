@@ -51,7 +51,7 @@ const Categories = () => {
         {/* Categories Grid */}
         {categoriesData.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {categoriesData.map((category) => (
+            {categoriesData?.map((category) => (
               <div
                 key={category._id || category.id}
                 className="group cursor-pointer transform transition-all duration-300 scale-95 hover:scale-100"

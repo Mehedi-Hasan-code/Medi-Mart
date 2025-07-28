@@ -33,7 +33,6 @@ const CategoryTable = ({ categories, refetch }) => {
       if (result.isConfirmed) {
         try {
           const response = await privateApi.delete(`/categories/${id}`);
-          console.log(response);
           if (response.success === true) {
             Swal.fire({
               title: 'Deleted!',

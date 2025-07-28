@@ -33,7 +33,6 @@ const Login = () => {
       toast.success('Login successful');
       navigate(location.state || '/');
     } catch (error) {
-      console.log(error.message);
       setErrorMessage(error.message);
     } finally {
       setLoading(false);
@@ -64,7 +63,6 @@ const Login = () => {
       navigate(location.state || '/');
       toast.success('Login successful');
     } catch (error) {
-      console.log(error);
       setErrorMessage(error.message);
     }
   };

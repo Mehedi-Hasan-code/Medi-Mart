@@ -49,11 +49,9 @@ const Success = () => {
             `/checkout/verify-payment?session_id=${sessionId}`,
             orderDetails
           );
-          console.log(response);
 
           if (response?.payment_success === true) {
             setOrderData(response);
-            console.log(response);
             clearCart();
           } else {
             navigate('/cart');

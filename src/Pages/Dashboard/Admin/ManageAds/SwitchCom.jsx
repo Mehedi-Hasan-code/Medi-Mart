@@ -21,7 +21,6 @@ const SwitchCom = ({ ad, onStatusChange }) => {
     if (response?.modifiedCount > 0 && onStatusChange) {
       onStatusChange({ ...ad, status: statusData.status });
     }
-    console.log(response);
   };
 
   return (

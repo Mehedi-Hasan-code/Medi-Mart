@@ -13,7 +13,7 @@ const ShopTable = ({
 }) => {
   const { addItem } = useContext(CartContext);
   return (
-    <div className="overflow-x-auto0">
+    <div className="overflow-x-auto">
       <table className="table">
         {/* head */}
         <thead>

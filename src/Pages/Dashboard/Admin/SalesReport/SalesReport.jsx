@@ -14,7 +14,7 @@ const SalesReport = () => {
     queryFn: () => privateApi.get('/orders/sales-report'),
   });
 
-  console.log(data);
+
   return (
     <>
       <Helmet key={location.pathname}>

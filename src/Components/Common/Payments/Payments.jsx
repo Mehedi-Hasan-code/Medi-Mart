@@ -39,7 +39,6 @@ const Payments = ({ payments, refetch }) => {
     );
   }
 
-  console.log(payments);
 
   const handleAccept = (transactionId) => {
     Swal.fire({
@@ -60,7 +59,6 @@ const Payments = ({ payments, refetch }) => {
       if (result.isConfirmed) {
         const res = await privateApi.patch(`/payments/${transactionId}`);
         if (res.orders.modifiedCount > 0 && res.payment.modifiedCount > 0) {
-          console.log(res);
           if (typeof refetch === 'function') {
             refetch();
           }
