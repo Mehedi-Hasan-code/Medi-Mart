@@ -62,11 +62,11 @@ const ShopTable = ({
                     <div className="join join-vertical">
                       <Button
                         onClick={() => openModal(medicine)}
-                        className="rounded-md bg-black/20 px-4 py-2 text-sm font-medium text-white focus:not-data-focus:outline-none data-focus:outline data-focus:outline-white data-hover:bg-black/30 btn join-item flex items-center gap-2"
+                        className="rounded-md bg-blue-500 hover:bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors duration-200 flex items-center justify-center gap-2"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="w-4 h-4 text-blue-500"
+                          className="w-4 h-4"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -80,7 +80,7 @@ const ShopTable = ({
                         Details
                       </Button>
                       <button
-                        className="btn join-item flex items-center gap-2"
+                        className="btn join-item bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center justify-center gap-2"
                         onClick={() =>
                           addItem({
                             id: medicine._id,
@@ -100,7 +100,7 @@ const ShopTable = ({
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="w-4 h-4 text-green-500"
+                          className="w-4 h-4"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
