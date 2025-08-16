@@ -142,87 +142,114 @@ const ShopGrid = ({
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center my-4 gap-2 bg-white p-4 rounded-lg shadow-sm">
-        <button
-          className="btn btn-sm"
-          onClick={() => goToPage(currentPage - 1)}
-          disabled={currentPage === 1}
-        >
-          Prev
-        </button>
-        {/* Pagination Buttons with Ellipsis */}
-        {totalPages <= 5 ? (
-          [...Array(totalPages)].map((_, idx) => (
-            <button
-              key={idx + 1}
-              className={`btn btn-sm ${
-                currentPage === idx + 1 ? 'btn-active' : ''
-              }`}
-              onClick={() => goToPage(idx + 1)}
-            >
-              {idx + 1}
-            </button>
-          ))
-        ) : (
-          <>
-            {/* First page */}
-            <button
-              className={`btn btn-sm ${currentPage === 1 ? 'btn-active' : ''}`}
-              onClick={() => goToPage(1)}
-            >
-              1
-            </button>
-            {/* Left Ellipsis */}
-            {currentPage > 3 && <span className="px-2">...</span>}
-            {/* Pages around current */}
-            {Array.from({ length: 5 }, (_, i) => currentPage - 2 + i)
-              .filter(
-                (pageNum) =>
-                  pageNum > 1 &&
-                  pageNum < totalPages &&
-                  pageNum >= currentPage - 2 &&
-                  pageNum <= currentPage + 2
-              )
-              .map((pageNum) => (
+      <div className="flex flex-col sm:flex-row justify-center items-center my-4 gap-2 bg-white p-3 sm:p-4 rounded-lg shadow-sm">
+        {/* Navigation Buttons */}
+        <div className="flex items-center gap-1 sm:gap-2 order-1 sm:order-none">
+          <button
+            className="btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
+        </div>
+
+        {/* Page Numbers */}
+        <div className="flex items-center gap-1 sm:gap-2 order-2 sm:order-none mt-2 sm:mt-0">
+          {totalPages <= 5 ? (
+            // If total pages is 5 or less, show all page numbers
+            [...Array(totalPages)].map((_, idx) => (
+              <button
+                key={idx + 1}
+                className={`btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2 ${
+                  currentPage === idx + 1 ? 'btn-active' : ''
+                }`}
+                onClick={() => goToPage(idx + 1)}
+              >
+                {idx + 1}
+              </button>
+            ))
+          ) : (
+            // If more than 5 pages, show smart pagination with max 5 page numbers
+            <>
+              {/* Always show first page */}
+              <button
+                className={`btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2 ${
+                  currentPage === 1 ? 'btn-active' : ''
+                }`}
+                onClick={() => goToPage(1)}
+              >
+                1
+              </button>
+
+              {/* Show ellipsis if there's a gap */}
+              {currentPage > 3 && (
+                <span className="px-1 sm:px-2 text-xs sm:text-sm">...</span>
+              )}
+
+              {/* Show current page and 2 pages around it (max 3 pages) */}
+              {Array.from({ length: 3 }, (_, i) => currentPage - 1 + i)
+                .filter((pageNum) => pageNum > 1 && pageNum < totalPages)
+                .map((pageNum) => (
+                  <button
+                    key={pageNum}
+                    className={`btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2 ${
+                      currentPage === pageNum ? 'btn-active' : ''
+                    }`}
+                    onClick={() => goToPage(pageNum)}
+                  >
+                    {pageNum}
+                  </button>
+                ))}
+
+              {/* Show ellipsis if there's a gap */}
+              {currentPage < totalPages - 2 && (
+                <span className="px-1 sm:px-2 text-xs sm:text-sm">...</span>
+              )}
+
+              {/* Always show last page if it's different from first */}
+              {totalPages > 1 && (
                 <button
-                  key={pageNum}
-                  className={`btn btn-sm ${
-                    currentPage === pageNum ? 'btn-active' : ''
+                  className={`btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2 ${
+                    currentPage === totalPages ? 'btn-active' : ''
                   }`}
-                  onClick={() => goToPage(pageNum)}
+                  onClick={() => goToPage(totalPages)}
                 >
-                  {pageNum}
+                  {totalPages}
                 </button>
-              ))}
-            {/* Right Ellipsis */}
-            {currentPage < totalPages - 2 && <span className="px-2">...</span>}
-            {/* Last page */}
-            <button
-              className={`btn btn-sm ${
-                currentPage === totalPages ? 'btn-active' : ''
-              }`}
-              onClick={() => goToPage(totalPages)}
-            >
-              {totalPages}
-            </button>
-          </>
-        )}
-        <button className="btn btn-sm">
-          <select value={itemsPerPage} onChange={handleItemsPerPageChange}>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Next Button */}
+        <div className="flex items-center gap-1 sm:gap-2 order-3 sm:order-none">
+          <button
+            className="btn btn-sm text-xs sm:text-sm px-2 sm:px-3 py-2"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+
+        {/* Items Per Page Selector */}
+        <div className="flex items-center gap-2 order-4 sm:order-none mt-2 sm:mt-0">
+          <span className="text-xs sm:text-sm text-gray-600 hidden sm:block">
+            Show:
+          </span>
+          <select
+            value={itemsPerPage}
+            onChange={handleItemsPerPageChange}
+            className="select select-sm select-bordered text-xs sm:text-sm min-w-[60px] sm:min-w-[80px]"
+          >
             {[5, 10, 20, 50].map((num) => (
               <option key={num} value={num}>
                 {num}
               </option>
             ))}
           </select>
-        </button>
-        <button
-          className="btn btn-sm"
-          onClick={() => goToPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-        >
-          Next
-        </button>
+        </div>
       </div>
     </div>
   );
