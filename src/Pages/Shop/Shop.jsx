@@ -5,9 +5,10 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 import LoadingError from '../../Components/Common/States/LoadingError';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 
-import { HeartPulse } from 'lucide-react';
+import { HeartPulse, Grid3X3, List } from 'lucide-react';
 import DataLoading from '../../Components/Common/Loaders/DataLoading';
 import ShopTable from '../../Components/Tables/ShopTable';
+import ShopGrid from '../../Components/Grid/ShopGrid';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
 
@@ -16,6 +17,7 @@ const Shop = () => {
   const { publicApi } = useAxiosSecure();
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   // Calculate paginated data
   const { data: medicinesCount } = useQuery({
@@ -88,17 +90,57 @@ const Shop = () => {
               Your health, our priority.
             </p>
           </div>
-          {/* Table Section */}
-          <div className="bg-white/90 rounded-2xl shadow-xl border border-gray-100 p-4 md:p-8">
-            <ShopTable
-              paginatedMedicines={paginatedMedicines}
-              itemsPerPage={itemsPerPage}
-              currentPage={currentPage}
-              totalPages={totalPages}
-              goToPage={goToPage}
-              handleItemsPerPageChange={handleItemsPerPageChange}
-              openModal={openModal}
-            />
+          {/* View Toggle */}
+          <div className="flex justify-end mb-6">
+            <div className="flex bg-white rounded-lg shadow-sm border border-gray-200 p-1">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 ${
+                  viewMode === 'grid'
+                    ? 'bg-blue-500 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                <Grid3X3 className="w-4 h-4" />
+                Grid
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 ${
+                  viewMode === 'list'
+                    ? 'bg-blue-500 text-white shadow-sm'
+                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                }`}
+              >
+                <List className="w-4 h-4" />
+                List
+              </button>
+            </div>
+          </div>
+
+          {/* Content Section */}
+          <div>
+            {viewMode === 'list' ? (
+              <ShopTable
+                paginatedMedicines={paginatedMedicines}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                handleItemsPerPageChange={handleItemsPerPageChange}
+                openModal={openModal}
+              />
+            ) : (
+              <ShopGrid
+                paginatedMedicines={paginatedMedicines}
+                itemsPerPage={itemsPerPage}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                goToPage={goToPage}
+                handleItemsPerPageChange={handleItemsPerPageChange}
+                openModal={openModal}
+              />
+            )}
           </div>
         </div>
         <DetailsModal

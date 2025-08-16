@@ -119,7 +119,7 @@ const ShopTable = ({
         </tbody>
       </table>
       {/* Pagination Controls */}
-      <div className="flex justify-center my-4 gap-2">
+      <div className="flex justify-center my-4 gap-2 bg-red-200">
         <button
           className="btn btn-sm"
           onClick={() => goToPage(currentPage - 1)}
