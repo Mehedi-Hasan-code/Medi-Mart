@@ -40,7 +40,7 @@ const Testimonial = () => {
   return (
     <section className="bg-gray-5 py-12 px-4 md:px-0">
       <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-bold text-blue-700 mb-2">What Our Customers Say</h2>
+        <h2 className="text-2xl md:text-4xl font-bold mb-2">What Our Customers Say</h2>
         <p className="text-gray-600 mb-10">
           Trusted by thousands of customers across Bangladesh. See how MediMart is making online medicine shopping easy and safe.
         </p>

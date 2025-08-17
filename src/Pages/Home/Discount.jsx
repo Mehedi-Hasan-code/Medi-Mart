@@ -36,7 +36,7 @@ const Discount = () => {
   // Render the discounted medicines list here
   return (
     <section className="py-8 px-2 md:px-0 max-w-6xl mx-auto">
-      <h2 className="text-2xl md:text-3xl font-bold text-primary mb-6 text-center">
+      <h2 className="text-2xl md:text-4xl font-bold mb-6 text-center">
         Top Discounts
       </h2>
       <Swiper

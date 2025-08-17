@@ -101,7 +101,7 @@ const SalesPromotion = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          <h2 className="text-2xl md:text-4xl font-bold text-gray-800 mb-4">
             🎉 Sales & Promotions
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -113,9 +113,6 @@ const SalesPromotion = () => {
         {/* Promotional Banners */}
         {ads && ads.length > 0 && (
           <div className="mb-16">
-            <h3 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-              Special Offers
-            </h3>
             <Swiper
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={20}

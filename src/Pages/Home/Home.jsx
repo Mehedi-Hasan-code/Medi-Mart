@@ -8,6 +8,7 @@ import Newsletter from './Newsletter';
 import HowItWorks from './HowItWorks';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
+import LatestProduct from './LatestProduct';
 
 const Home = () => {
   const location = useLocation();
@@ -20,6 +21,7 @@ const Home = () => {
       <Hero />
       <Categories />
       <Discount />
+      <LatestProduct />
       <SalesPromotion />
       <HowItWorks />
       <Testimonial />
