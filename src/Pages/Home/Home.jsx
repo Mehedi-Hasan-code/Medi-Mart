@@ -2,7 +2,9 @@ import React from 'react';
 import Categories from './Categories';
 import Hero from './Hero';
 import Discount from './Discount';
+import SalesPromotion from './SalesPromotion';
 import Testimonial from './Testimonial';
+import Newsletter from './Newsletter';
 import HowItWorks from './HowItWorks';
 import { Helmet } from 'react-helmet-async';
 import { useLocation } from 'react-router-dom';
@@ -18,8 +20,10 @@ const Home = () => {
       <Hero />
       <Categories />
       <Discount />
+      <SalesPromotion />
       <HowItWorks />
       <Testimonial />
+      <Newsletter />
     </>
   );
 };

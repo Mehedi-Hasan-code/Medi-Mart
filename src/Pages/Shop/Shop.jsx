@@ -5,7 +5,14 @@ import useAxiosSecure from '../../hooks/useAxiosSecure';
 import LoadingError from '../../Components/Common/States/LoadingError';
 import DetailsModal from '../../Components/Common/Medicines/DetailsModal';
 
-import { HeartPulse, Grid3X3, List } from 'lucide-react';
+import {
+  HeartPulse,
+  Grid3X3,
+  List,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+} from 'lucide-react';
 import DataLoading from '../../Components/Common/Loaders/DataLoading';
 import ShopTable from '../../Components/Tables/ShopTable';
 import ShopGrid from '../../Components/Grid/ShopGrid';
@@ -18,6 +25,7 @@ const Shop = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
+  const [sortBy, setSortBy] = useState('none'); // 'none', 'lowToHigh', 'highToLow'
 
   // Calculate paginated data
   const { data: medicinesCount } = useQuery({
@@ -40,6 +48,35 @@ const Shop = () => {
     setCurrentPage(1);
   };
 
+  // Handle sort change
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    setCurrentPage(1); // Reset to first page when sorting changes
+  };
+
+  // Sort medicines based on selected option
+  const sortMedicines = (medicines) => {
+    if (!medicines || sortBy === 'none') return medicines;
+
+    const sortedMedicines = [...medicines];
+
+    if (sortBy === 'lowToHigh') {
+      sortedMedicines.sort((a, b) => {
+        const priceA = Number(a.price) * (1 - Number(a.discount) / 100);
+        const priceB = Number(b.price) * (1 - Number(b.discount) / 100);
+        return priceA - priceB;
+      });
+    } else if (sortBy === 'highToLow') {
+      sortedMedicines.sort((a, b) => {
+        const priceA = Number(a.price) * (1 - Number(a.discount) / 100);
+        const priceB = Number(b.price) * (1 - Number(b.discount) / 100);
+        return priceB - priceA;
+      });
+    }
+
+    return sortedMedicines;
+  };
+
   // get medicines
   const { data, isLoading, error } = useQuery({
     queryKey: ['medicines', itemsPerPage, currentPage],
@@ -48,6 +85,7 @@ const Shop = () => {
   });
 
   const paginatedMedicines = data?.result || [];
+  const sortedMedicines = sortMedicines(paginatedMedicines);
 
   // modal logic 👇
   const [isOpen, setIsOpen] = useState(false);
@@ -90,8 +128,56 @@ const Shop = () => {
               Your health, our priority.
             </p>
           </div>
-          {/* View Toggle */}
-          <div className="flex justify-end mb-6">
+
+          {/* Sort and View Controls */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+            {/* Sort Dropdown */}
+            <div className="flex items-center gap-2">
+              <label
+                htmlFor="sort-select"
+                className="text-sm font-medium text-gray-700"
+              >
+                Sort by Price:
+              </label>
+              <div className="relative">
+                <select
+                  id="sort-select"
+                  value={sortBy}
+                  onChange={handleSortChange}
+                  className="appearance-none bg-white border border-gray-300 rounded-lg px-4 py-2 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent shadow-sm"
+                >
+                  <option value="none" className="flex items-center gap-2">
+                    <ArrowUpDown className="w-4 h-4" />
+                    No Sort
+                  </option>
+                  <option value="lowToHigh" className="flex items-center gap-2">
+                    <ArrowUp className="w-4 h-4" />
+                    Low to High
+                  </option>
+                  <option value="highToLow" className="flex items-center gap-2">
+                    <ArrowDown className="w-4 h-4" />
+                    High to Low
+                  </option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            {/* View Toggle */}
             <div className="flex bg-white rounded-lg shadow-sm border border-gray-200 p-1">
               <button
                 onClick={() => setViewMode('grid')}
@@ -122,7 +208,7 @@ const Shop = () => {
           <div>
             {viewMode === 'list' ? (
               <ShopTable
-                paginatedMedicines={paginatedMedicines}
+                paginatedMedicines={sortedMedicines}
                 itemsPerPage={itemsPerPage}
                 currentPage={currentPage}
                 totalPages={totalPages}
@@ -132,7 +218,7 @@ const Shop = () => {
               />
             ) : (
               <ShopGrid
-                paginatedMedicines={paginatedMedicines}
+                paginatedMedicines={sortedMedicines}
                 itemsPerPage={itemsPerPage}
                 currentPage={currentPage}
                 totalPages={totalPages}

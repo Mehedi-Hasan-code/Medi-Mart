@@ -98,7 +98,7 @@ const Categories = () => {
                       onClick={() =>
                         navigate(`/details?category=${category.categoryName}`)
                       }
-                      className="w-full btn btn-primary btn-sm"
+                      className="w-full btn bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 btn-sm"
                     >
                       View Details
                     </button>
@@ -133,11 +133,11 @@ const Categories = () => {
               medicine for your needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="btn btn-primary">
+              <button className="btn bg-blue-500 text-white hover:bg-blue-600">
                 <span className="mr-2">📞</span>
                 Contact Support
               </button>
-              <button className="btn btn-outline btn-secondary">
+              <button className="btn btn-outline btn-primary">
                 <span className="mr-2">🔍</span>
                 Search Medicines
               </button>
