@@ -25,6 +25,7 @@ import SellerRoute from './SellerRoute';
 import PrivateRoute from './PrivateRoute';
 import Profile from '../Pages/Profile/Profile';
 import NotFound from '../Components/Common/States/NotFound'
+import ContactUs from '../Pages/contact/ContactUs';
 
 export const router = createBrowserRouter([
   {
@@ -79,6 +80,10 @@ export const router = createBrowserRouter([
         path: 'forbidden',
         element: <Forbidden />,
       },
+      {
+        path: 'contact-us',
+        element: <ContactUs />
+      }
     ],
   },
   {
